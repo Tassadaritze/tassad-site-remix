@@ -16,13 +16,13 @@ export function safeRedirect(
   to: FormDataEntryValue | string | null | undefined,
   defaultRedirect: string = DEFAULT_REDIRECT
 ) {
-  if (!to || typeof to !== "string") {
+  if (!to || typeof to !== "string") 
     return defaultRedirect;
-  }
+  
 
-  if (!to.startsWith("/") || to.startsWith("//")) {
+  if (!to.startsWith("/") || to.startsWith("//")) 
     return defaultRedirect;
-  }
+  
 
   return to;
 }
@@ -50,9 +50,9 @@ function isUser(user: any): user is User {
 
 export function useOptionalUser(): User | undefined {
   const data = useMatchesData("root");
-  if (!data || !isUser(data.user)) {
+  if (!data || !isUser(data.user)) 
     return undefined;
-  }
+  
   return data.user;
 }
 

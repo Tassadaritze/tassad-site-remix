@@ -2,18 +2,66 @@
  * @type {import('@types/eslint').Linter.BaseConfig}
  */
 module.exports = {
-  extends: [
-    "@remix-run/eslint-config",
-    "@remix-run/eslint-config/node",
-    "@remix-run/eslint-config/jest-testing-library",
-    "prettier",
-  ],
-  // we're using vitest which has a very similar API to jest
-  // (so the linting plugins work nicely), but it means we have to explicitly
-  // set the jest version.
-  settings: {
-    jest: {
-      version: 27,
+    env: {
+        browser: true,
+        node: true,
+        es2019: true,
+        jest: true
     },
-  },
+    parser: "@typescript-eslint/parser",
+    plugins: ["@typescript-eslint", "jsx-a11y"],
+    extends: [
+        "@remix-run/eslint-config",
+        "@remix-run/eslint-config/node",
+        "@remix-run/eslint-config/jest-testing-library",
+        "eslint:recommended",
+        "plugin:jsx-a11y/recommended",
+        "prettier"
+    ],
+    parserOptions: {
+        sourceType: "module",
+        ecmaFeatures: {
+            jsx: true
+        }
+    },
+    overrides: [
+        {
+            files: ["**/*.ts", "**/*.tsx"],
+            extends: [
+                "plugin:@typescript-eslint/recommended",
+                "plugin:@typescript-eslint/recommended-requiring-type-checking"
+            ],
+            parserOptions: {
+                project: "./tsconfig.json"
+            }
+        }
+    ],
+    rules: {
+        curly: ["error", "multi-or-nest"],
+        "dot-notation": "error",
+        eqeqeq: ["error", "smart"],
+        "array-bracket-newline": ["error", { multiline: true }],
+        "array-element-newline": ["error", "consistent"],
+        "arrow-parens": ["error", "always"],
+        "function-call-argument-newline": ["error", "consistent"],
+        "max-len": "off",
+        "multiline-ternary": ["error", "always-multiline"],
+        "nonblock-statement-body-position": ["error", "below"],
+        "object-curly-spacing": ["error", "always"],
+        "object-property-newline": [
+            "error",
+            { allowAllPropertiesOnSameLine: true }
+        ],
+        "operator-linebreak": ["error", "before"],
+        "padded-blocks": ["error", "never"],
+        "space-infix-ops": "error"
+    },
+    // we're using vitest which has a very similar API to jest
+    // (so the linting plugins work nicely), but it means we have to explicitly
+    // set the jest version.
+    settings: {
+        jest: {
+            version: 27
+        }
+    }
 };

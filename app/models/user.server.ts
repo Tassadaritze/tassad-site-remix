@@ -43,18 +43,18 @@ export async function verifyLogin(
     },
   });
 
-  if (!userWithPassword || !userWithPassword.password) {
+  if (!userWithPassword || !userWithPassword.password) 
     return null;
-  }
+  
 
   const isValid = await bcrypt.compare(
     password,
     userWithPassword.password.hash
   );
 
-  if (!isValid) {
+  if (!isValid) 
     return null;
-  }
+  
 
   const { password: _password, ...userWithoutPassword } = userWithPassword;
 

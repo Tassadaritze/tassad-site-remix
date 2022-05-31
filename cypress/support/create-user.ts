@@ -12,12 +12,12 @@ import { createUser } from "~/models/user.server";
 installGlobals();
 
 async function createAndLogin(email: string) {
-  if (!email) {
+  if (!email) 
     throw new Error("email required for login");
-  }
-  if (!email.endsWith("@example.com")) {
+  
+  if (!email.endsWith("@example.com")) 
     throw new Error("All test emails must end in @example.com");
-  }
+  
 
   const user = await createUser(email, "myreallystrongpassword");
 
@@ -29,9 +29,9 @@ async function createAndLogin(email: string) {
   });
 
   const cookieValue = response.headers.get("Set-Cookie");
-  if (!cookieValue) {
+  if (!cookieValue) 
     throw new Error("Cookie missing from createUserSession response");
-  }
+  
   const parsedCookie = parse(cookieValue);
   // we log it like this so our cypress command can parse it out and set it as
   // the cookie value.

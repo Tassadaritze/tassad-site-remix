@@ -17,7 +17,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function NotesPage() {
-  const data = useLoaderData() as LoaderData;
+  const data = useLoaderData() ;
   const user = useUser();
 
   return (
@@ -45,9 +45,11 @@ export default function NotesPage() {
 
           <hr />
 
-          {data.noteListItems.length === 0 ? (
+          {data.noteListItems.length === 0
+? (
             <p className="p-4">No notes yet</p>
-          ) : (
+          )
+: (
             <ol>
               {data.noteListItems.map((note) => (
                 <li key={note.id}>

@@ -13,7 +13,8 @@ import { safeRedirect, validateEmail } from "~/utils";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await getUserId(request);
-  if (userId) return redirect("/");
+  if (userId) 
+return redirect("/");
   return json({});
 };
 
@@ -83,11 +84,10 @@ export default function LoginPage() {
   const passwordRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    if (actionData?.errors?.email) {
+    if (actionData?.errors?.email) 
       emailRef.current?.focus();
-    } else if (actionData?.errors?.password) {
+     else if (actionData?.errors?.password) 
       passwordRef.current?.focus();
-    }
   }, [actionData]);
 
   return (
