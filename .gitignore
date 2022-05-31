@@ -1,8 +1,10 @@
 node_modules
 
+/.idea
 /build
 /public/build
 .env
+package-lock.json
 
 /cypress/screenshots
 /cypress/videos
