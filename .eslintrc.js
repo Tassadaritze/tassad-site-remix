@@ -37,7 +37,7 @@ module.exports = {
         }
     ],
     rules: {
-        curly: ["error", "multi-or-nest"],
+        curly: ["error", "all"],
         "dot-notation": "error",
         eqeqeq: ["error", "smart"],
         "array-bracket-newline": ["error", { multiline: true }],
@@ -45,13 +45,8 @@ module.exports = {
         "arrow-parens": ["error", "always"],
         "function-call-argument-newline": ["error", "consistent"],
         "max-len": "off",
-        "multiline-ternary": ["error", "always-multiline"],
-        "nonblock-statement-body-position": ["error", "below"],
         "object-curly-spacing": ["error", "always"],
-        "object-property-newline": [
-            "error",
-            { allowAllPropertiesOnSameLine: true }
-        ],
+        "object-property-newline": ["error", { allowAllPropertiesOnSameLine: true }],
         "operator-linebreak": ["error", "before"],
         "padded-blocks": ["error", "never"],
         "space-infix-ops": "error"

@@ -25,6 +25,7 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run"
   },
   "prettier": {
+    "printWidth": 120,
     "tabWidth": 4,
     "trailingComma": "none"
   },
