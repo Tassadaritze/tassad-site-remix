@@ -16,7 +16,6 @@ export const meta: MetaFunction = () => {
 
 export const loader: LoaderFunction = () => {
     const messages = global.messages;
-    console.log("[LOADER] ", messages);
     return json<LoaderData>({
         messages
     });
@@ -26,13 +25,11 @@ export const action: ActionFunction = async ({ request }) => {
     const message = (await request.formData()).get("message");
     invariant(typeof message === "string", "message must be a string");
     global.messages.push(message);
-    console.log("[ACTION] ", global.messages);
     return null;
 };
 
 const Chat = () => {
     const { messages } = useLoaderData<LoaderData>();
-    console.log("[COMPONENT] ", messages);
 
     return (
         <main className="flex-gap-y-8 relative inset-2 flex max-h-[600px] w-11/12 flex-col lg:w-1/2">
