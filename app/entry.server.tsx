@@ -3,7 +3,8 @@ import { RemixServer } from "@remix-run/react";
 import { renderToString } from "react-dom/server";
 
 declare global {
-    const messages: string[];
+    // eslint-disable-next-line no-var
+    var messages: string[];
 }
 
 export default function handleRequest(

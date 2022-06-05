@@ -4,7 +4,7 @@ import { Form, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 type LoaderData = {
-    messages: typeof messages;
+    messages: typeof global.messages;
 };
 
 export const meta: MetaFunction = () => {
@@ -15,19 +15,16 @@ export const meta: MetaFunction = () => {
 };
 
 export const loader: LoaderFunction = () => {
-    console.log("loader", messages);
+    const messages = global.messages;
     return json<LoaderData>({
         messages
     });
 };
 
 export const action: ActionFunction = async ({ request }) => {
-    console.log("action start", messages);
     const message = (await request.formData()).get("message");
     invariant(typeof message === "string", "message must be a string");
-    console.log("[ACTION] ", message);
-    messages.push(message);
-    console.log("action end", messages);
+    global.messages.push(message);
     return null;
 };
 
