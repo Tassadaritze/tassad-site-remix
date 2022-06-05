@@ -6,6 +6,7 @@ declare global {
     // eslint-disable-next-line no-var
     var messages: string[];
 }
+global.messages = [];
 
 export default function handleRequest(
     request: Request,
