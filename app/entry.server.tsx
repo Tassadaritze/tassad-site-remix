@@ -2,11 +2,6 @@ import type { EntryContext } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { renderToString } from "react-dom/server";
 
-declare global {
-    // eslint-disable-next-line no-var
-    var messages: string[];
-}
-
 export default function handleRequest(
     request: Request,
     responseStatusCode: number,
