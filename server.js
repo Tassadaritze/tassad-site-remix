@@ -2,7 +2,7 @@ import { createRequestHandler } from "@remix-run/vercel";
 import * as build from "@remix-run/dev/server-build";
 const express = require("express");
 const compression = require("compression");
-// const morgan = require("morgan");
+const morgan = require("morgan");
 
 // const BUILD_DIR = path.join(process.cwd(), "build");
 
@@ -14,7 +14,6 @@ app.use(
     })
 );
 
-/*
 // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
 app.disable("x-powered-by");
 
@@ -27,16 +26,12 @@ app.use(express.static("public", { maxAge: "1h" }));
 
 app.use(morgan("tiny"));
 
- */
 export default createRequestHandler({ build, mode: process.env.NODE_ENV });
-/*
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log(`Express server listening on port ${port}`);
 });
-
- */
 
 /*
 function purgeRequireCache() {
