@@ -1,21 +1,10 @@
-import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { Form, useLoaderData, useTransition } from "@remix-run/react";
+import type { ActionFunction, MetaFunction } from "@remix-run/node";
+import { Form, useTransition } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
-import type { Message } from "~/models/message.server";
-import { addMessage, getMessages } from "~/models/message.server";
 import { chatEmitter } from "~/chat.server";
-
-interface JSONMessage extends Omit<Message, "createdAt"> {
-    createdAt: string;
-}
-
-type LoaderData = {
-    messages: JSONMessage[];
-};
 
 export const meta: MetaFunction = () => {
     return {
@@ -24,17 +13,9 @@ export const meta: MetaFunction = () => {
     };
 };
 
-export const loader: LoaderFunction = async () => {
-    const messages = await getMessages(-100);
-    return json({
-        messages
-    });
-};
-
 export const action: ActionFunction = async ({ request }) => {
     const message = (await request.formData()).get("message");
     invariant(typeof message === "string", "message must be a string");
-    await addMessage(message);
     chatEmitter.emit("newmessage", message);
     return null;
 };
@@ -48,8 +29,7 @@ const useLayoutEffect = canUseDOM
       };
 
 const Chat = () => {
-    const loaderMessages = useLoaderData<LoaderData>().messages;
-    const [messages, setMessages] = useState(loaderMessages);
+    const [messages, setMessages] = useState<string[]>([]);
 
     const formRef = useRef<HTMLFormElement>(null);
     const endRef = useRef<HTMLDivElement>(null);
@@ -72,22 +52,6 @@ const Chat = () => {
         source.onmessage = function (ev) {
             console.log("[LITERALLY ANYTHING] ", ev);
         };
-        source.addEventListener("newmessage", (e) => {
-            console.log("NEW MESSAGE");
-            setMessages((prevState) => {
-                if (typeof e.data === "string") {
-                    return [
-                        ...prevState,
-                        {
-                            id: -1,
-                            message: e.data,
-                            createdAt: JSON.stringify(Date.now())
-                        }
-                    ];
-                }
-                return prevState;
-            });
-        });
         return () => {
             source.close();
         };
@@ -98,9 +62,8 @@ const Chat = () => {
             <ul className="h-[600px] overflow-y-auto border-x-2 border-t-2 border-black px-2">
                 {messages.map((message, i) => (
                     <li key={i}>
-                        {`${message.createdAt.slice(11, 16)} `}
-                        <b>User: </b>
-                        {message.message}
+                        <strong>User: </strong>
+                        {message}
                     </li>
                 ))}
                 <div ref={endRef} />
