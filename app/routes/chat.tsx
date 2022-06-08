@@ -4,7 +4,21 @@ import invariant from "tiny-invariant";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
+import type { Message } from "~/chat.server";
 import { chatEmitter } from "~/chat.server";
+
+interface JSONMessage extends Omit<Message, "createdAt"> {
+    createdAt: string;
+}
+
+const isJSONMessage = (message: unknown): message is JSONMessage => {
+    return (
+        !!message &&
+        typeof message === "object" &&
+        !!(message as JSONMessage).content &&
+        !!(message as JSONMessage).createdAt
+    );
+};
 
 export const meta: MetaFunction = () => {
     return {
@@ -16,7 +30,10 @@ export const meta: MetaFunction = () => {
 export const action: ActionFunction = async ({ request }) => {
     const message = (await request.formData()).get("message");
     invariant(typeof message === "string", "message must be a string");
-    chatEmitter.emit("newmessage", message);
+    chatEmitter.emit("newmessage", {
+        content: message,
+        createdAt: new Date(Date.now())
+    });
     return null;
 };
 
@@ -29,7 +46,7 @@ const useLayoutEffect = canUseDOM
       };
 
 const Chat = () => {
-    const [messages, setMessages] = useState<string[]>([]);
+    const [messages, setMessages] = useState<JSONMessage[]>([]);
 
     const formRef = useRef<HTMLFormElement>(null);
     const endRef = useRef<HTMLDivElement>(null);
@@ -49,9 +66,14 @@ const Chat = () => {
 
     useEffect(() => {
         const source = new EventSource("/stream/chat");
-        source.onmessage = function (ev) {
-            console.log("[LITERALLY ANYTHING] ", ev);
-        };
+        source.addEventListener("newmessage", (e) => {
+            invariant(typeof e.data === "string", "event stream event data must be a string");
+            const message = JSON.parse(e.data) as JSONMessage;
+            invariant(isJSONMessage(message), "event stream newmessage event data must be a JSONMessage");
+            setMessages((prevState) => {
+                return [...prevState, message];
+            });
+        });
         return () => {
             source.close();
         };
@@ -62,8 +84,9 @@ const Chat = () => {
             <ul className="h-[600px] overflow-y-auto border-x-2 border-t-2 border-black px-2">
                 {messages.map((message, i) => (
                     <li key={i}>
+                        {`${message.createdAt.slice(11, 16)} `}
                         <strong>User: </strong>
-                        {message}
+                        {message.content}
                     </li>
                 ))}
                 <div ref={endRef} />

@@ -6,3 +6,9 @@ declare global {
 }
 global.__chatEmitter = global.__chatEmitter || new EventEmitter();
 export const chatEmitter = __chatEmitter;
+
+export type Message = {
+    // user: string,
+    content: string;
+    createdAt: Date;
+};

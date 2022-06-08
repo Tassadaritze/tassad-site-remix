@@ -47,7 +47,6 @@ module.exports = {
         "max-len": "off",
         "object-curly-spacing": ["error", "always"],
         "object-property-newline": ["error", { allowAllPropertiesOnSameLine: true }],
-        "operator-linebreak": ["error", "before"],
         "padded-blocks": ["error", "never"],
         "space-infix-ops": "error"
     },
