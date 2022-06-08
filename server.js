@@ -1,11 +1,8 @@
-const path = require("path");
+import * as build from "@remix-run/dev/server-build";
 const express = require("express");
 const compression = require("compression");
 const morgan = require("morgan");
 const { createRequestHandler } = require("@remix-run/express");
-
-// const BUILD_DIR = path.join(process.cwd(), "build");
-const BUILD_DIR = process.env.VERCEL === "1" ? path.join(process.cwd(), "public") : path.join(process.cwd(), "build");
 
 const app = express();
 
@@ -31,15 +28,13 @@ app.all(
     "*",
     process.env.NODE_ENV === "development"
         ? (req, res, next) => {
-              purgeRequireCache();
-
               return createRequestHandler({
-                  build: require(BUILD_DIR),
+                  build,
                   mode: process.env.NODE_ENV
               })(req, res, next);
           }
         : createRequestHandler({
-              build: require(BUILD_DIR),
+              build,
               mode: process.env.NODE_ENV
           })
 );
@@ -49,6 +44,7 @@ app.listen(port, () => {
     console.log(`Express server listening on port ${port}`);
 });
 
+/*
 function purgeRequireCache() {
     // purge require cache on requests for "server side HMR" this won't let
     // you have in-memory objects between requests in development,
@@ -61,3 +57,5 @@ function purgeRequireCache() {
         }
     }
 }
+
+ */
