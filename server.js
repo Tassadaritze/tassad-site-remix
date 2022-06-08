@@ -18,11 +18,11 @@ function purgeRequireCache() {
 
 exports.handler =
     process.env.NODE_ENV === "production"
-        ? createRequestHandler({ build: require(BUILD_DIR) })
+        ? createRequestHandler({ build: require("./build") })
         : (event, context) => {
               purgeRequireCache();
               return createRequestHandler({
-                  build: require(BUILD_DIR)
+                  build: require("./build")
               })(event, context);
           };
 
