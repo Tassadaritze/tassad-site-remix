@@ -1,8 +1,39 @@
-import * as build from "@remix-run/dev/server-build";
+const path = require("path");
+const { createRequestHandler } = require("@remix-run/netlify");
+
+const BUILD_DIR = path.join(process.cwd(), "netlify");
+
+function purgeRequireCache() {
+    // purge require cache on requests for "server side HMR" this won't let
+    // you have in-memory objects between requests in development,
+    // netlify typically does this for you, but we've found it to be hit or
+    // miss and some times requires you to refresh the page after it auto reloads
+    // or even have to restart your server
+    for (const key in require.cache) {
+        if (key.startsWith(BUILD_DIR)) {
+            delete require.cache[key];
+        }
+    }
+}
+
+exports.handler =
+    process.env.NODE_ENV === "production"
+        ? createRequestHandler({ build: require("./build") })
+        : (event, context) => {
+              purgeRequireCache();
+              return createRequestHandler({
+                  build: require("./build")
+              })(event, context);
+          };
+
+/*
+const path = require("path");
 const express = require("express");
 const compression = require("compression");
 const morgan = require("morgan");
 const { createRequestHandler } = require("@remix-run/express");
+
+const BUILD_DIR = path.join(process.cwd(), "build");
 
 const app = express();
 
@@ -28,23 +59,24 @@ app.all(
     "*",
     process.env.NODE_ENV === "development"
         ? (req, res, next) => {
+              purgeRequireCache();
+
               return createRequestHandler({
-                  build,
+                  build: require(BUILD_DIR),
                   mode: process.env.NODE_ENV
               })(req, res, next);
           }
         : createRequestHandler({
-              build,
+              build: require(BUILD_DIR),
               mode: process.env.NODE_ENV
           })
 );
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 6112;
 
 app.listen(port, () => {
     console.log(`Express server listening on port ${port}`);
 });
 
-/*
 function purgeRequireCache() {
     // purge require cache on requests for "server side HMR" this won't let
     // you have in-memory objects between requests in development,
@@ -57,5 +89,4 @@ function purgeRequireCache() {
         }
     }
 }
-
  */
