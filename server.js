@@ -29,14 +29,12 @@ app.use(morgan("tiny"));
 
  */
 export default createRequestHandler({ build, mode: process.env.NODE_ENV });
-/*
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
     console.log(`Express server listening on port ${port}`);
 });
-
- */
 
 /*
 function purgeRequireCache() {
