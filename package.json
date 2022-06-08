@@ -37,6 +37,7 @@
   "dependencies": {
     "@prisma/client": "^3.14.0",
     "@remix-run/express": "^1.5.1",
+    "@remix-run/netlify": "^1.5.1",
     "@remix-run/node": "^1.5.1",
     "@remix-run/react": "^1.5.1",
     "@remix-run/serve": "^1.5.1",
@@ -54,7 +55,6 @@
     "@faker-js/faker": "^6.3.1",
     "@remix-run/dev": "^1.5.1",
     "@remix-run/eslint-config": "^1.5.1",
-    "@remix-run/vercel": "^1.5.1",
     "@testing-library/cypress": "^8.0.2",
     "@testing-library/dom": "^8.13.0",
     "@testing-library/jest-dom": "^5.16.4",

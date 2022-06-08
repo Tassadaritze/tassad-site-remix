@@ -1,6 +1,7 @@
 node_modules
 
 /.idea
+/.netlify
 /api
 /build
 /public/build
