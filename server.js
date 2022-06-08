@@ -5,8 +5,7 @@ const morgan = require("morgan");
 const { createRequestHandler } = require("@remix-run/express");
 
 // const BUILD_DIR = path.join(process.cwd(), "build");
-const BUILD_DIR =
-    process.env.VERCEL === "1" ? path.join(process.cwd(), "public/build") : path.join(process.cwd(), "build");
+const BUILD_DIR = process.env.VERCEL === "1" ? path.join(process.cwd(), "public") : path.join(process.cwd(), "build");
 
 const app = express();
 
