@@ -37,32 +37,19 @@ export const action: ActionFunction = async ({ request }) => {
     return null;
 };
 
-const canUseDOM = !!(typeof window !== "undefined" && window.document && window.document.createElement);
-
-const useLayoutEffect = canUseDOM
-    ? React.useLayoutEffect
-    : () => {
-          return;
-      };
-
 const Chat = () => {
     const [messages, setMessages] = useState<JSONMessage[]>([]);
 
     const formRef = useRef<HTMLFormElement>(null);
+    const ulRef = useRef<HTMLUListElement>(null);
     const endRef = useRef<HTMLDivElement>(null);
     const transition = useTransition();
     const isSending = transition.state === "submitting";
-    const isLoading = transition.state === "loading";
     useEffect(() => {
         if (!isSending) {
             formRef.current?.reset();
         }
     }, [isSending]);
-    useLayoutEffect(() => {
-        if (!isLoading) {
-            endRef.current?.scrollIntoView();
-        }
-    }, [isLoading]);
 
     useEffect(() => {
         const source = new EventSource("/stream/chat");
@@ -73,6 +60,15 @@ const Chat = () => {
             setMessages((prevState) => {
                 return [...prevState, message];
             });
+            // Scroll to bottom on new message if list was scrolled to bottom before
+            if (
+                ulRef.current &&
+                ulRef.current.firstElementChild?.clientHeight &&
+                Math.abs(ulRef.current.scrollHeight - ulRef.current.clientHeight - ulRef.current.scrollTop) <
+                    ulRef.current.firstElementChild.clientHeight + 1
+            ) {
+                endRef.current?.scrollIntoView();
+            }
         });
         return () => {
             source.close();
@@ -81,7 +77,7 @@ const Chat = () => {
 
     return (
         <main className="flex-gap-y-8 relative inset-2 flex w-11/12 flex-col lg:w-1/2">
-            <ul className="h-[600px] overflow-y-auto border-x-2 border-t-2 border-black px-2">
+            <ul ref={ulRef} className="h-[600px] overflow-y-auto border-x-2 border-t-2 border-black px-2">
                 {messages.map((message, i) => (
                     <li key={i}>
                         {`${message.createdAt.slice(11, 16)} `}
@@ -91,7 +87,7 @@ const Chat = () => {
                 ))}
                 <div ref={endRef} />
             </ul>
-            <Form method="post" className="flex" ref={formRef}>
+            <Form method="post" ref={formRef} className="flex">
                 <input
                     type="text"
                     name="message"
