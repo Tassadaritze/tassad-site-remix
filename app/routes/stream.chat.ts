@@ -29,7 +29,7 @@ export const loader: LoaderFunction = ({ request }) => {
                 chatEmitter.on("newmessage", handleMessage);
                 request.signal.addEventListener("abort", close);
                 const ping = setInterval(() => {
-                    controller.enqueue(new Uint8Array(1));
+                    controller.enqueue(encoder.encode(":keepalive\n\n"));
                 }, 25 * 1000);
 
                 if (request.signal.aborted) {
