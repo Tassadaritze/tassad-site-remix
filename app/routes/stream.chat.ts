@@ -22,11 +22,15 @@ export const loader: LoaderFunction = ({ request }) => {
                 const close = () => {
                     chatEmitter.off("newmessage", handleMessage);
                     request.signal.removeEventListener("abort", close);
+                    clearInterval(ping);
                     controller.close();
                 };
 
                 chatEmitter.on("newmessage", handleMessage);
                 request.signal.addEventListener("abort", close);
+                const ping = setInterval(() => {
+                    controller.enqueue(new Uint8Array(0));
+                }, 25 * 1000);
 
                 if (request.signal.aborted) {
                     close();
