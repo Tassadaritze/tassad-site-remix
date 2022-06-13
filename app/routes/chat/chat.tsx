@@ -7,18 +7,17 @@ import { useEffect, useRef, useState } from "react";
 import type { Message } from "~/chat.server";
 import { chatEmitter } from "~/chat.server";
 
-interface JSONMessage extends Omit<Message, "createdAt"> {
-    createdAt: string;
-}
-
-const isJSONMessage = (message: unknown): message is JSONMessage => {
+const isMessage = (message: unknown): message is Message => {
     return (
         !!message &&
         typeof message === "object" &&
-        !!(message as JSONMessage).content &&
-        !!(message as JSONMessage).createdAt
+        !!(message as Message).content &&
+        (message as Message).createdAt instanceof Date
     );
 };
+
+const USER_NAME_CHAR_LIMIT = 32;
+const MAX_MESSAGE_LENGTH = 1869;
 
 export const meta: MetaFunction = () => {
     return {
@@ -42,7 +41,7 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 const Chat = () => {
-    const [messages, setMessages] = useState<JSONMessage[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [isScrolled, setIsScrolled] = useState(true);
 
     const formRef = useRef<HTMLFormElement>(null);
@@ -57,11 +56,16 @@ const Chat = () => {
     }, [isSending]);
 
     useEffect(() => {
-        const source = new EventSource("/stream/chat");
+        const source = new EventSource("/chat/stream/chat");
         source.addEventListener("newmessage", (e) => {
             invariant(typeof e.data === "string", "event stream event data must be a string");
-            const message = JSON.parse(e.data) as JSONMessage;
-            invariant(isJSONMessage(message), "event stream newmessage event data must be a JSONMessage");
+            const message = JSON.parse(e.data, (k, v: unknown) => {
+                if (k === "createdAt" && typeof v === "string") {
+                    return new Date(v);
+                }
+                return v;
+            }) as Message;
+            invariant(isMessage(message), "event stream newmessage event data must be a Message");
             setMessages((prevState) => {
                 return [...prevState, message];
             });
@@ -79,8 +83,6 @@ const Chat = () => {
             source.close();
         };
     }, []);
-
-    useEffect(() => console.log(isScrolled), [isScrolled]);
 
     const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
         if (
@@ -106,7 +108,7 @@ const Chat = () => {
             >
                 {messages.map((message, i) => (
                     <li key={i}>
-                        {`${message.createdAt.slice(11, 16)} `}
+                        {`${message.createdAt.toTimeString().slice(0, 5)} `}
                         <strong>User: </strong>
                         {message.content}
                     </li>
