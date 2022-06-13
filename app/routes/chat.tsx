@@ -30,6 +30,10 @@ export const meta: MetaFunction = () => {
 export const action: ActionFunction = async ({ request }) => {
     const message = (await request.formData()).get("message");
     invariant(typeof message === "string", "message must be a string");
+    if (message.length < 1) {
+        console.error("message must be longer than 0 characters");
+        return null;
+    }
     chatEmitter.emit("newmessage", {
         content: message,
         createdAt: new Date(Date.now())
@@ -39,6 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 const Chat = () => {
     const [messages, setMessages] = useState<JSONMessage[]>([]);
+    const [isScrolled, setIsScrolled] = useState(true);
 
     const formRef = useRef<HTMLFormElement>(null);
     const ulRef = useRef<HTMLUListElement>(null);
@@ -75,9 +80,30 @@ const Chat = () => {
         };
     }, []);
 
+    useEffect(() => console.log(isScrolled), [isScrolled]);
+
+    const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
+        if (
+            (!isScrolled &&
+                e.currentTarget.firstElementChild?.clientHeight &&
+                Math.abs(e.currentTarget.scrollHeight - e.currentTarget.clientHeight - e.currentTarget.scrollTop) <
+                    e.currentTarget.firstElementChild.clientHeight + 1) ||
+            (isScrolled &&
+                e.currentTarget.firstElementChild?.clientHeight &&
+                Math.abs(e.currentTarget.scrollHeight - e.currentTarget.clientHeight - e.currentTarget.scrollTop) >
+                    e.currentTarget.firstElementChild.clientHeight + 1)
+        ) {
+            setIsScrolled((prevState) => !prevState);
+        }
+    };
+
     return (
         <main className="flex-gap-y-8 relative inset-2 flex w-11/12 flex-col lg:w-1/2">
-            <ul ref={ulRef} className="h-[600px] overflow-y-auto border-x-2 border-t-2 border-black px-2">
+            <ul
+                ref={ulRef}
+                onScroll={handleScroll}
+                className="h-[600px] overflow-y-auto border-x-2 border-t-2 border-black px-2"
+            >
                 {messages.map((message, i) => (
                     <li key={i}>
                         {`${message.createdAt.slice(11, 16)} `}
@@ -87,6 +113,15 @@ const Chat = () => {
                 ))}
                 <div ref={endRef} />
             </ul>
+            {!isScrolled && (
+                <button
+                    type="button"
+                    onClick={() => endRef.current?.scrollIntoView()}
+                    className="absolute bottom-12 left-[40%] rounded-md bg-black/50 px-2 text-white hover:bg-gray-900/50"
+                >
+                    Scroll to new messages
+                </button>
+            )}
             <Form method="post" ref={formRef} className="flex">
                 <input
                     type="text"
