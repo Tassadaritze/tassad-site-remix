@@ -161,6 +161,7 @@ const Chat = () => {
                     type="text"
                     name="message"
                     placeholder="Your message..."
+                    autoComplete="off"
                     className="w-full border-2 border-black"
                 />
                 <button className="bg-gray-400 px-2">Send</button>
