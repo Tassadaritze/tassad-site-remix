@@ -7,8 +7,14 @@ declare global {
 global.__chatEmitter = global.__chatEmitter || new EventEmitter();
 export const chatEmitter = __chatEmitter;
 
+export const enum Event {
+    NewMessage,
+    UserJoin,
+    UserLeave
+}
+
 export type Message = {
-    // user: string,
+    username: string | undefined;
     content: string;
     createdAt: Date;
 };

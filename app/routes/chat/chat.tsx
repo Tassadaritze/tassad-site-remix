@@ -1,11 +1,13 @@
-import type { ActionFunction, MetaFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { Form, useTransition } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
 import type { Message } from "~/chat.server";
-import { chatEmitter } from "~/chat.server";
+import { chatEmitter, Event } from "~/chat.server";
+import { getSession } from "~/session.server";
 
 const isMessage = (message: unknown): message is Message => {
     return (
@@ -16,7 +18,6 @@ const isMessage = (message: unknown): message is Message => {
     );
 };
 
-const USER_NAME_CHAR_LIMIT = 32;
 const MAX_MESSAGE_LENGTH = 1869;
 
 export const meta: MetaFunction = () => {
@@ -26,17 +27,43 @@ export const meta: MetaFunction = () => {
     };
 };
 
+export const loader: LoaderFunction = async ({ request }) => {
+    const session = await getSession(request.headers.get("Cookie"));
+
+    if (!session.has("username")) {
+        return redirect("/chat");
+    }
+
+    return null;
+};
+
 export const action: ActionFunction = async ({ request }) => {
+    const session = await getSession(request.headers.get("Cookie"));
+    const username = session.get("username") as unknown;
+
+    if (typeof username !== "string") {
+        return redirect("/chat");
+    }
+
     const message = (await request.formData()).get("message");
+
     invariant(typeof message === "string", "message must be a string");
+
     if (message.length < 1) {
         console.error("message must be longer than 0 characters");
         return null;
     }
-    chatEmitter.emit("newmessage", {
-        content: message,
-        createdAt: new Date(Date.now())
-    });
+
+    chatEmitter.emit(
+        "newmessage",
+        {
+            username,
+            content: message,
+            createdAt: new Date(Date.now())
+        },
+        Event.NewMessage
+    );
+
     return null;
 };
 
@@ -56,8 +83,7 @@ const Chat = () => {
     }, [isSending]);
 
     useEffect(() => {
-        const source = new EventSource("/chat/stream/chat");
-        source.addEventListener("newmessage", (e) => {
+        const handleMessage = (e: MessageEvent) => {
             invariant(typeof e.data === "string", "event stream event data must be a string");
             const message = JSON.parse(e.data, (k, v: unknown) => {
                 if (k === "createdAt" && typeof v === "string") {
@@ -78,7 +104,13 @@ const Chat = () => {
             ) {
                 endRef.current?.scrollIntoView();
             }
-        });
+        };
+
+        const source = new EventSource("/chat/stream/chat");
+        source.addEventListener("newmessage", handleMessage);
+        source.addEventListener("userjoin", handleMessage);
+        source.addEventListener("userleave", handleMessage);
+
         return () => {
             source.close();
         };
@@ -109,8 +141,8 @@ const Chat = () => {
                 {messages.map((message, i) => (
                     <li key={i}>
                         {`${message.createdAt.toTimeString().slice(0, 5)} `}
-                        <strong>User: </strong>
-                        {message.content}
+                        {message.username ? <strong>{message.username}: </strong> : null}
+                        {message.username ? message.content : <strong>{message.content}</strong>}
                     </li>
                 ))}
                 <div ref={endRef} />
