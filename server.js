@@ -4,6 +4,8 @@ const compression = require("compression");
 const morgan = require("morgan");
 const { createRequestHandler } = require("@remix-run/express");
 
+require("dotenv").config();
+
 const BUILD_DIR = path.join(process.cwd(), "build");
 
 const app = express();
