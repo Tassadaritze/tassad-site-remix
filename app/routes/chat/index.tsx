@@ -106,7 +106,7 @@ const Chat = () => {
             }
         };
 
-        const source = new EventSource("/chat/stream/chat");
+        const source = new EventSource("/chat/stream");
         source.addEventListener("newmessage", handleMessage);
         source.addEventListener("userjoin", handleMessage);
         source.addEventListener("userleave", handleMessage);
