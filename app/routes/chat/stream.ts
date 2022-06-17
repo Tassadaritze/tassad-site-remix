@@ -2,7 +2,7 @@ import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
 import type { Message } from "~/chat.server";
-import { chatEmitter, Event } from "~/chat.server";
+import { chatEmitter, Event, users } from "~/chat.server";
 import { getSession } from "~/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -58,6 +58,7 @@ export const loader: LoaderFunction = async ({ request }) => {
                         },
                         Event.UserLeave
                     );
+                    users.delete(username);
                 };
 
                 chatEmitter.on("newmessage", handleMessage);
@@ -81,6 +82,7 @@ export const loader: LoaderFunction = async ({ request }) => {
                     },
                     Event.UserJoin
                 );
+                users.add(username);
             }
         }),
         { headers: { "Content-Type": "text/event-stream" } }

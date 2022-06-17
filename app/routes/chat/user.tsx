@@ -36,9 +36,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
     const session = await getSession(request.headers.get("Cookie"));
-    const username = (await request.formData()).get("username");
+    let username = (await request.formData()).get("username");
 
     invariant(typeof username === "string", "username must be a string");
+
+    username = username.trim();
 
     if (username.length > USERNAME_CHAR_LIMIT) {
         session.flash("error", `Username cannot be longer than ${USERNAME_CHAR_LIMIT} characters`);
