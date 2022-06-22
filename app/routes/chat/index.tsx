@@ -123,10 +123,11 @@ const Chat = () => {
             });
             // Scroll to bottom on new message if list was scrolled to bottom before
             if (
+                endRef.current &&
                 ulRef.current &&
-                ulRef.current.firstElementChild?.clientHeight &&
+                endRef.current.previousElementSibling?.clientHeight &&
                 Math.abs(ulRef.current.scrollHeight - ulRef.current.clientHeight - ulRef.current.scrollTop) <
-                    ulRef.current.firstElementChild.clientHeight + 1
+                    endRef.current.previousElementSibling.clientHeight + 1
             ) {
                 endRef.current?.scrollIntoView();
             }
