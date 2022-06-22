@@ -56,6 +56,9 @@ export const action: ActionFunction = async ({ request }) => {
     if (message.length < 1) {
         console.error("message must be longer than 0 characters");
         return null;
+    } else if (message.length > MAX_MESSAGE_LENGTH) {
+        console.error("message must be shorter than MAX_MESSAGE_LENGTH");
+        return null;
     }
 
     chatEmitter.emit(
@@ -77,6 +80,7 @@ const Chat = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isScrolled, setIsScrolled] = useState(true);
     const [usersState, setUsersState] = useState(users);
+    const [inputLength, setInputLength] = useState(0);
 
     const formRef = useRef<HTMLFormElement>(null);
     const ulRef = useRef<HTMLUListElement>(null);
@@ -84,10 +88,11 @@ const Chat = () => {
     const transition = useTransition();
     const isSending = transition.state === "submitting";
     useEffect(() => {
-        if (!isSending) {
+        if (isSending && inputLength <= MAX_MESSAGE_LENGTH) {
             formRef.current?.reset();
+            setInputLength(0);
         }
-    }, [isSending]);
+    }, [inputLength, isSending]);
 
     useEffect(() => {
         const handleMessage = (e: MessageEvent) => {
@@ -158,6 +163,8 @@ const Chat = () => {
         }
     };
 
+    const inputLengthStyle = inputLength > MAX_MESSAGE_LENGTH ? " text-red-700" : "";
+
     return (
         <div className="flex">
             <main className="flex-gap-y-8 relative inset-2 flex w-11/12 flex-col lg:w-1/2">
@@ -169,7 +176,7 @@ const Chat = () => {
                     {messages.map((message, i) => (
                         <li key={i}>
                             {`${message.createdAt.toTimeString().slice(0, 5)} `}
-                            {message.username ? <strong>{message.username}: </strong> : null}
+                            {message.username && <strong>{message.username}: </strong>}
                             {message.username ? message.content : <strong>{message.content}</strong>}
                         </li>
                     ))}
@@ -179,20 +186,30 @@ const Chat = () => {
                     <button
                         type="button"
                         onClick={() => endRef.current?.scrollIntoView()}
-                        className="absolute bottom-12 left-[40%] rounded-md bg-black/50 px-2 text-white hover:bg-gray-900/50"
+                        className="absolute bottom-[10%] left-[40%] rounded-md bg-black/50 px-2 text-white hover:bg-gray-900/50"
                     >
                         Scroll to new messages
                     </button>
                 )}
                 <Form method="post" ref={formRef} className="flex">
-                    <input
-                        type="text"
-                        name="message"
-                        placeholder="Your message"
-                        autoComplete="off"
-                        className="w-full border-2 border-black"
-                    />
-                    <button className="bg-gray-400 px-2 hover:bg-gray-300">Send</button>
+                    <div className="flex w-full flex-col">
+                        <input
+                            type="text"
+                            name="message"
+                            placeholder="Your message"
+                            autoComplete="off"
+                            className="border-2 border-black"
+                            onInput={(e) => setInputLength(e.currentTarget.value.length)}
+                        />
+                        {inputLength + 100 > MAX_MESSAGE_LENGTH && (
+                            <p className={`w-fit self-end px-2${inputLengthStyle}`}>
+                                {MAX_MESSAGE_LENGTH - inputLength}
+                            </p>
+                        )}
+                    </div>
+                    <button className="h-fit border-y-2 border-r-2 border-black bg-gray-400 px-2 hover:bg-gray-300">
+                        Send
+                    </button>
                 </Form>
             </main>
             <ChatUsers users={usersState} />
@@ -204,14 +221,14 @@ const ChatUsers = ({ users }: { users: string[] }) => {
     const [isUsersVisible, setIsUsersVisible] = useState(false);
 
     const styleColours = isUsersVisible
-        ? "text-black bg-gray-400 hover:bg-gray-300"
-        : "text-white bg-gray-500 hover:bg-gray-400";
+        ? " text-black bg-gray-400 hover:bg-gray-300"
+        : " text-white bg-gray-500 hover:bg-gray-400";
 
     return (
         <div className="relative inset-2 flex max-h-[600px] flex-col">
             <button
                 onClick={() => setIsUsersVisible((prevState) => !prevState)}
-                className={`w-fit border-y-2 border-r-2 border-black p-1 text-4xl ${styleColours}`}
+                className={`w-fit border-y-2 border-r-2 border-black p-1 text-4xl${styleColours}`}
             >
                 Users
             </button>
