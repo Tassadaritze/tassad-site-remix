@@ -2,10 +2,10 @@ import { EventEmitter } from "events";
 
 declare global {
     var __chatEmitter: EventEmitter;
-    var __users: Set<string>;
+    var __users: string[];
 }
 global.__chatEmitter = global.__chatEmitter || new EventEmitter();
-global.__users = global.__users || new Set<string>();
+global.__users = global.__users || [];
 export const chatEmitter = __chatEmitter;
 export const users = __users;
 

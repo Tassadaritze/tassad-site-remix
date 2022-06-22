@@ -1,13 +1,17 @@
 import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import { Form, useTransition } from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
+import { Form, useLoaderData, useTransition } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
 import type { Message } from "~/chat.server";
-import { chatEmitter, Event } from "~/chat.server";
+import { chatEmitter, Event, users } from "~/chat.server";
 import { getSession } from "~/session.server";
+
+type LoaderData = {
+    users: typeof users;
+};
 
 const isMessage = (message: unknown): message is Message => {
     return (
@@ -34,7 +38,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         return redirect("/chat/user");
     }
 
-    return null;
+    return json<LoaderData>({ users });
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -68,8 +72,11 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 const Chat = () => {
+    const { users } = useLoaderData<LoaderData>();
+
     const [messages, setMessages] = useState<Message[]>([]);
     const [isScrolled, setIsScrolled] = useState(true);
+    const [usersState, setUsersState] = useState(users);
 
     const formRef = useRef<HTMLFormElement>(null);
     const ulRef = useRef<HTMLUListElement>(null);
@@ -90,8 +97,27 @@ const Chat = () => {
                     return new Date(v);
                 }
                 return v;
-            }) as Message;
+            }) as unknown;
             invariant(isMessage(message), "event stream newmessage event data must be a Message");
+            switch (e.type) {
+                case "userjoin": {
+                    setUsersState((prevState) => [...prevState, message.content]);
+                    message.content += " joined the chat";
+                    break;
+                }
+                case "userleave": {
+                    setUsersState((prevState) => {
+                        const users = [...prevState];
+                        const userIndex = users.indexOf(message.content);
+                        if (userIndex > -1) {
+                            users.splice(userIndex, 1);
+                        }
+                        return users;
+                    });
+                    message.content += " left the chat";
+                    break;
+                }
+            }
             setMessages((prevState) => {
                 return [...prevState, message];
             });
@@ -132,41 +158,70 @@ const Chat = () => {
     };
 
     return (
-        <main className="flex-gap-y-8 relative inset-2 flex w-11/12 flex-col lg:w-1/2">
-            <ul
-                ref={ulRef}
-                onScroll={handleScroll}
-                className="h-[600px] overflow-y-auto border-x-2 border-t-2 border-black px-2"
-            >
-                {messages.map((message, i) => (
-                    <li key={i}>
-                        {`${message.createdAt.toTimeString().slice(0, 5)} `}
-                        {message.username ? <strong>{message.username}: </strong> : null}
-                        {message.username ? message.content : <strong>{message.content}</strong>}
-                    </li>
-                ))}
-                <div ref={endRef} />
-            </ul>
-            {!isScrolled && (
-                <button
-                    type="button"
-                    onClick={() => endRef.current?.scrollIntoView()}
-                    className="absolute bottom-12 left-[40%] rounded-md bg-black/50 px-2 text-white hover:bg-gray-900/50"
+        <div className="flex">
+            <main className="flex-gap-y-8 relative inset-2 flex w-11/12 flex-col lg:w-1/2">
+                <ul
+                    ref={ulRef}
+                    onScroll={handleScroll}
+                    className="h-[600px] overflow-y-auto break-words border-x-2 border-t-2 border-black px-2"
                 >
-                    Scroll to new messages
-                </button>
+                    {messages.map((message, i) => (
+                        <li key={i}>
+                            {`${message.createdAt.toTimeString().slice(0, 5)} `}
+                            {message.username ? <strong>{message.username}: </strong> : null}
+                            {message.username ? message.content : <strong>{message.content}</strong>}
+                        </li>
+                    ))}
+                    <div ref={endRef} />
+                </ul>
+                {!isScrolled && (
+                    <button
+                        type="button"
+                        onClick={() => endRef.current?.scrollIntoView()}
+                        className="absolute bottom-12 left-[40%] rounded-md bg-black/50 px-2 text-white hover:bg-gray-900/50"
+                    >
+                        Scroll to new messages
+                    </button>
+                )}
+                <Form method="post" ref={formRef} className="flex">
+                    <input
+                        type="text"
+                        name="message"
+                        placeholder="Your message"
+                        autoComplete="off"
+                        className="w-full border-2 border-black"
+                    />
+                    <button className="bg-gray-400 px-2 hover:bg-gray-300">Send</button>
+                </Form>
+            </main>
+            <ChatUsers users={usersState} />
+        </div>
+    );
+};
+
+const ChatUsers = ({ users }: { users: string[] }) => {
+    const [isUsersVisible, setIsUsersVisible] = useState(false);
+
+    const styleColours = isUsersVisible
+        ? "text-black bg-gray-400 hover:bg-gray-300"
+        : "text-white bg-gray-500 hover:bg-gray-400";
+
+    return (
+        <div className="relative inset-2 flex max-h-[600px] flex-col">
+            <button
+                onClick={() => setIsUsersVisible((prevState) => !prevState)}
+                className={`w-fit border-y-2 border-r-2 border-black p-1 text-4xl ${styleColours}`}
+            >
+                Users
+            </button>
+            {isUsersVisible && (
+                <ul className="w-fit list-outside list-disc overflow-y-auto overflow-x-clip bg-black px-6 text-white">
+                    {users.map((user, i) => {
+                        return <li key={i}>{user}</li>;
+                    })}
+                </ul>
             )}
-            <Form method="post" ref={formRef} className="flex">
-                <input
-                    type="text"
-                    name="message"
-                    placeholder="Your message..."
-                    autoComplete="off"
-                    className="w-full border-2 border-black"
-                />
-                <button className="bg-gray-400 px-2">Send</button>
-            </Form>
-        </main>
+        </div>
     );
 };
 

@@ -53,12 +53,15 @@ export const loader: LoaderFunction = async ({ request }) => {
                     chatEmitter.emit(
                         "userleave",
                         {
-                            content: `${username} left the chat`,
+                            content: username,
                             createdAt: new Date(Date.now())
                         },
                         Event.UserLeave
                     );
-                    users.delete(username);
+                    const userIndex = users.indexOf(username);
+                    if (userIndex > -1) {
+                        users.splice(userIndex, 1);
+                    }
                 };
 
                 chatEmitter.on("newmessage", handleMessage);
@@ -77,12 +80,12 @@ export const loader: LoaderFunction = async ({ request }) => {
                 chatEmitter.emit(
                     "userjoin",
                     {
-                        content: `${username} joined the chat`,
+                        content: username,
                         createdAt: new Date(Date.now())
                     },
                     Event.UserJoin
                 );
-                users.add(username);
+                users.push(username);
             }
         }),
         { headers: { "Content-Type": "text/event-stream" } }
