@@ -169,12 +169,13 @@ const Chat = () => {
         <div className="flex">
             <main className="flex-gap-y-8 relative inset-2 flex w-11/12 flex-col lg:w-1/2">
                 <ul
+                    aria-label="Chat messages"
                     ref={ulRef}
                     onScroll={handleScroll}
                     className="h-[600px] overflow-y-auto break-words border-x-2 border-t-2 border-black px-2"
                 >
                     {messages.map((message, i) => (
-                        <li key={i}>
+                        <li key={i} aria-label={`Chat message #${i + 1}`}>
                             {`${message.createdAt.toTimeString().slice(0, 5)} `}
                             {message.username && <strong>{message.username}: </strong>}
                             {message.username ? message.content : <strong>{message.content}</strong>}
@@ -196,13 +197,17 @@ const Chat = () => {
                         <input
                             type="text"
                             name="message"
+                            aria-label="Chat message input"
                             placeholder="Your message"
                             autoComplete="off"
                             className="border-2 border-black"
                             onInput={(e) => setInputLength(e.currentTarget.value.length)}
                         />
                         {inputLength + 100 > MAX_MESSAGE_LENGTH && (
-                            <p className={`w-fit self-end px-2${inputLengthStyle}`}>
+                            <p
+                                aria-label="Characters left until limit"
+                                className={`w-fit self-end px-2${inputLengthStyle}`}
+                            >
                                 {MAX_MESSAGE_LENGTH - inputLength}
                             </p>
                         )}
@@ -233,7 +238,10 @@ const ChatUsers = ({ users }: { users: string[] }) => {
                 Users
             </button>
             {isUsersVisible && (
-                <ul className="w-fit list-outside list-disc overflow-y-auto overflow-x-clip bg-black px-6 text-white">
+                <ul
+                    aria-label="Chat user list"
+                    className="w-fit list-outside list-disc overflow-y-auto overflow-x-clip bg-black px-6 text-white"
+                >
                     {users.map((user, i) => {
                         return <li key={i}>{user}</li>;
                     })}
