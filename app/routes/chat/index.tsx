@@ -186,7 +186,7 @@ const Chat = () => {
                     <button
                         type="button"
                         onClick={() => endRef.current?.scrollIntoView()}
-                        className="absolute bottom-[10%] left-[40%] rounded-md bg-black/50 px-2 text-white hover:bg-gray-900/50"
+                        className="absolute bottom-[10%] left-[40%] rounded-md bg-black/70 px-2 text-white hover:bg-gray-900/50"
                     >
                         Scroll to new messages
                     </button>
