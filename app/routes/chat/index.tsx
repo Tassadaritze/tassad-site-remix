@@ -221,14 +221,14 @@ const ChatUsers = ({ users }: { users: string[] }) => {
     const [isUsersVisible, setIsUsersVisible] = useState(false);
 
     const styleColours = isUsersVisible
-        ? " text-black bg-gray-400 hover:bg-gray-300"
+        ? " text-black bg-gray-400 hover:bg-gray-300 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.5)]"
         : " text-white bg-gray-500 hover:bg-gray-400";
 
     return (
         <div className="relative inset-2 flex max-h-[600px] flex-col">
             <button
                 onClick={() => setIsUsersVisible((prevState) => !prevState)}
-                className={`w-fit border-y-2 border-r-2 border-black p-1 text-4xl${styleColours}`}
+                className={`w-fit border-y-2 border-r-2 border-black p-1 text-4xl ${styleColours}`}
             >
                 Users
             </button>
