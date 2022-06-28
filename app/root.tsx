@@ -26,23 +26,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const handle = {
-    // In the handle export, we can add a i18n key with namespaces our route
-    // will need to load. This key can be a single string or an array of strings.
-    // TIP: In most cases, you should set this to your defaultNS from your i18n config
-    // or if you did not set one, set it to the i18next default namespace "translation"
     i18n: "common"
 };
 
 const App = () => {
-    // Get the locale from the loader
     const { locale } = useLoaderData<LoaderData>();
 
     const { i18n } = useTranslation();
 
-    // This hook will change the i18n instance language to the current locale
-    // detected by the loader, this way, when we do something to change the
-    // language, this locale will change and i18next will load the correct
-    // translation files
     useChangeLanguage(locale);
 
     return (
@@ -52,7 +43,7 @@ const App = () => {
                 <Links />
             </head>
             <body className="h-fit">
-                <header className={"flex h-16 min-w-full items-center justify-between bg-black text-4xl text-white"}>
+                <header className="flex h-16 min-w-full items-center justify-between bg-gray-800 text-4xl text-white">
                     <div className="flex gap-x-8 px-4">
                         <Link to="/" className="hover:text-blue-600 hover:underline">
                             Home
@@ -62,8 +53,117 @@ const App = () => {
                         </Link>
                         <p>Placeholder</p>
                     </div>
-                    <div className="px-4">
-                        <p>🌙</p>
+                    <div className="flex px-4">
+                        <svg viewBox="0 0 731.65 700.61" className="h-12">
+                            <path
+                                d="M556,71c37.58,14.73,99.54,46,142,110,87.74,132.34,40,328.43-70,438C479.55,766.86,217.28,757.45,103,641a236,236,0,0,1-47-70c146.06,38.73,301.61-5,404-114C611.8,295.47,559.38,83.7,556,71Z"
+                                transform="translate(-27.85 -44.57)"
+                                fill="none"
+                                stroke="white"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                        </svg>
+                        <svg viewBox="0 0 682 682" className="h-12">
+                            <circle
+                                cx="341"
+                                cy="341"
+                                r="100"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                            <line
+                                x1="341"
+                                y1="16"
+                                x2="341"
+                                y2="166"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                            <line
+                                x1="341"
+                                y1="516"
+                                x2="341"
+                                y2="666"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                            <line
+                                x1="16"
+                                y1="341"
+                                x2="166"
+                                y2="341"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                            <line
+                                x1="516"
+                                y1="341"
+                                x2="666"
+                                y2="341"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                            <line
+                                x1="467.97"
+                                y1="214.03"
+                                x2="574.03"
+                                y2="107.97"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                            <line
+                                x1="107.97"
+                                y1="574.03"
+                                x2="214.03"
+                                y2="467.97"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                            <line
+                                x1="107.97"
+                                y1="107.97"
+                                x2="214.03"
+                                y2="214.03"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                            <line
+                                x1="467.97"
+                                y1="467.97"
+                                x2="574.03"
+                                y2="574.03"
+                                fill="none"
+                                stroke="white"
+                                strokeLinecap="round"
+                                strokeMiterlimit="10"
+                                strokeWidth="32"
+                            />
+                        </svg>
                     </div>
                 </header>
                 <Outlet />
