@@ -2,6 +2,7 @@ describe("smoke tests", () => {
     afterEach(() => {
         cy.cleanupUser();
     });
+    // TODO: make tests for internationalization
 
     it("should allow you to join chat, chat, and view the user list when appropriate", () => {
         const username = "test name";
