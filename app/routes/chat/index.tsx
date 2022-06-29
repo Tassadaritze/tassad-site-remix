@@ -1,17 +1,24 @@
 import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useLoaderData, useTransition } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 
 import type { Message } from "~/chat.server";
 import { chatEmitter, Event, users } from "~/chat.server";
+import i18next from "~/i18next.server";
 import { getSession } from "~/session.server";
 
 type LoaderData = {
     users: typeof users;
+    title: string;
+    description: string;
 };
+
+const isLoaderData = (obj: unknown): obj is LoaderData =>
+    typeof (obj as LoaderData).title === "string" && typeof (obj as LoaderData).description === "string";
 
 const isMessage = (message: unknown): message is Message => {
     return (
@@ -24,10 +31,11 @@ const isMessage = (message: unknown): message is Message => {
 
 const MAX_MESSAGE_LENGTH = 1869;
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ data }: { data: unknown }) => {
+    const { title, description } = isLoaderData(data) ? data : { title: "", description: "" };
     return {
-        title: "Portfolio Website - Chat",
-        description: "Chat with other random people"
+        title,
+        description
     };
 };
 
@@ -38,7 +46,10 @@ export const loader: LoaderFunction = async ({ request }) => {
         return redirect("/chat/user");
     }
 
-    return json<LoaderData>({ users });
+    const t = await i18next.getFixedT(request, "chat");
+    const { title, description } = { title: t("title"), description: t("description") };
+
+    return json<LoaderData>({ users, title, description });
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -107,7 +118,7 @@ const Chat = () => {
             switch (e.type) {
                 case "userjoin": {
                     setUsersState((prevState) => [...prevState, message.content]);
-                    message.content += " joined the chat";
+                    message.content += ` ${t("eventChatJoin")}`;
                     break;
                 }
                 case "userleave": {
@@ -119,7 +130,7 @@ const Chat = () => {
                         }
                         return users;
                     });
-                    message.content += " left the chat";
+                    message.content += ` ${t("eventChatLeave")}`;
                     break;
                 }
             }
@@ -163,6 +174,9 @@ const Chat = () => {
         }
     };
 
+    const { t } = useTranslation("chat");
+    const { t: tc } = useTranslation();
+
     const inputLengthStyle = inputLength > MAX_MESSAGE_LENGTH ? " text-red-700" : "";
 
     return (
@@ -188,7 +202,7 @@ const Chat = () => {
                         onClick={() => endRef.current?.scrollIntoView()}
                         className="absolute bottom-[10%] left-[40%] rounded-md bg-black/70 px-2 text-white hover:bg-gray-900/50"
                     >
-                        Scroll to new messages
+                        {t("scrollToNewMessages")}
                     </button>
                 )}
                 <Form method="post" ref={formRef} className="flex">
@@ -196,7 +210,7 @@ const Chat = () => {
                         <input
                             type="text"
                             name="message"
-                            placeholder="Your message"
+                            placeholder={t("chatMessageInputPlaceholder")}
                             autoComplete="off"
                             className="border-2 border-black"
                             onInput={(e) => setInputLength(e.currentTarget.value.length)}
@@ -208,7 +222,7 @@ const Chat = () => {
                         )}
                     </div>
                     <button className="h-fit border-y-2 border-r-2 border-black bg-gray-400 px-2 hover:bg-gray-300">
-                        Send
+                        {tc("send")}
                     </button>
                 </Form>
             </main>
@@ -224,19 +238,21 @@ const ChatUsers = ({ users }: { users: string[] }) => {
         ? " text-black bg-gray-400 hover:bg-gray-300 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.5)]"
         : " text-white bg-gray-500 hover:bg-gray-400";
 
+    const { t } = useTranslation("chat");
+
     return (
         <div className="relative inset-2 flex max-h-[600px] flex-col">
             <button
                 onClick={() => setIsUsersVisible((prevState) => !prevState)}
                 className={`w-fit border-y-2 border-r-2 border-black p-1 text-4xl ${styleColours}`}
             >
-                Users
+                {t("users")}
             </button>
             {isUsersVisible && (
                 <ul className="w-fit list-outside list-disc overflow-y-auto overflow-x-clip bg-black px-6 text-white">
-                    {users.map((user, i) => {
-                        return <li key={i}>{user}</li>;
-                    })}
+                    {users.map((user, i) => (
+                        <li key={i}>{user}</li>
+                    ))}
                 </ul>
             )}
         </div>

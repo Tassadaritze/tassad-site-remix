@@ -1,0 +1,8 @@
+{
+  "title": "Chat Username Form - tassad-site",
+  "description": "Pick a username to use when chatting",
+
+  "chatUsernameFormLabel": "Enter a username to be shown in chat:",
+  "chatUsernameTooLongError": "Username cannot be longer than",
+  "characters": "characters"
+}

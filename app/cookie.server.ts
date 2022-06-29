@@ -1,3 +1,3 @@
 import { createCookie } from "@remix-run/node";
 
-export const langCookie = createCookie("lang");
+export const langCookie = createCookie("lang", { sameSite: "lax" });

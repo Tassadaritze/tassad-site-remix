@@ -1,20 +1,28 @@
 import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
+import i18next from "~/i18next.server";
 
 import { commitSession, getSession } from "~/session.server";
 
 type LoaderData = {
-    error: string | undefined;
+    error: unknown;
+    title: string;
+    description: string;
 };
+
+const isLoaderData = (obj: unknown): obj is LoaderData =>
+    typeof (obj as LoaderData).title === "string" && typeof (obj as LoaderData).description === "string";
 
 const USERNAME_CHAR_LIMIT = 32;
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({ data }: { data: unknown }) => {
+    const { title, description } = isLoaderData(data) ? data : { title: "", description: "" };
     return {
-        title: "Portfolio Website - Chat Name Form",
-        description: "Pick a username to use when chatting"
+        title,
+        description
     };
 };
 
@@ -25,7 +33,8 @@ export const loader: LoaderFunction = async ({ request }) => {
         return redirect("/chat");
     }
 
-    const data = { error: session.get("error") as unknown };
+    const t = await i18next.getFixedT(request, "chat.user");
+    const data = { error: session.get("error") as unknown, title: t("title"), description: t("description") };
 
     return json(data, {
         headers: {
@@ -43,7 +52,8 @@ export const action: ActionFunction = async ({ request }) => {
     username = username.trim();
 
     if (username.length > USERNAME_CHAR_LIMIT) {
-        session.flash("error", `Username cannot be longer than ${USERNAME_CHAR_LIMIT} characters`);
+        const t = await i18next.getFixedT(request, "chat.user");
+        session.flash("error", `${t("chatUsernameTooLongError")} ${USERNAME_CHAR_LIMIT} ${t("characters")}`);
 
         return redirect("/chat/user", {
             headers: {
@@ -63,20 +73,22 @@ export const action: ActionFunction = async ({ request }) => {
 
 const ChatUsernameForm = () => {
     const { error } = useLoaderData<LoaderData>();
+    const { t } = useTranslation("chat.user");
+    const { t: tc } = useTranslation();
 
     return (
         <main className="relative top-[20vh] flex items-center justify-center align-middle">
             <Form method="post" className="flex flex-col items-center">
-                {error ? <p className="text-red-700">{error}</p> : null}
+                {typeof error === "string" ? <p className="text-red-700">{error}</p> : null}
                 <label className="flex flex-col items-center py-4 text-4xl">
-                    Enter a username to be shown in chat:{" "}
+                    {t("chatUsernameFormLabel")}{" "}
                     <input
                         name="username"
                         maxLength={USERNAME_CHAR_LIMIT}
                         className={`w-[32em] border-2 border-black px-2${error ? " border-red-700" : ""}`}
                     />
                 </label>
-                <button className="rounded-md bg-gray-300 px-2 text-4xl hover:bg-gray-200">Submit</button>
+                <button className="rounded-md bg-gray-300 px-2 text-4xl hover:bg-gray-200">{tc("submit")}</button>
             </Form>
         </main>
     );

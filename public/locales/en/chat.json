@@ -1,0 +1,10 @@
+{
+  "title": "Chat - tassad-site",
+  "description": "Chat with other random people",
+
+  "chatMessageInputPlaceholder": "Your message",
+  "scrollToNewMessages": "Scroll to new messages",
+  "users": "Users",
+  "eventChatJoin": "joined the chat",
+  "eventChatLeave": "left the chat"
+}

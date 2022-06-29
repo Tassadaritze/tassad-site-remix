@@ -1,0 +1,10 @@
+{
+  "title": "Чат - tassad-site",
+  "description": "Общайтесь с какими-то случайными людьми",
+
+  "chatMessageInputPlaceholder": "Ваше сообщение",
+  "scrollToNewMessages": "Прокрутить к новым сообщениям",
+  "users": "Пользователи",
+  "eventChatJoin": "присоединились к чату",
+  "eventChatLeave": "покинули чат"
+}

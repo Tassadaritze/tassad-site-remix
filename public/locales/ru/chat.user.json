@@ -1,0 +1,8 @@
+{
+  "title": "Форма для имени в чате - tassad-site",
+  "description": "Выберите себе имя для использования в чате",
+
+  "chatUsernameFormLabel": "Введите имя для показа в чате:",
+  "chatUsernameTooLongError": "Имя не может быть длиннее",
+  "characters": "символов"
+}
