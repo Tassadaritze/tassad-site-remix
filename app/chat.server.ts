@@ -16,7 +16,8 @@ export const enum Event {
 }
 
 export type Message = {
-    username: string | undefined;
-    content: string;
+    username: string;
+    content: string | undefined;
     createdAt: Date;
+    type: Event;
 };

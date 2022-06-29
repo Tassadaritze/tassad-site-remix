@@ -11,21 +11,31 @@ import i18next from "~/i18next.server";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
-type LoaderData = { locale: string };
+type LoaderData = { locale: string; title: string };
+
+const isLoaderData = (obj: unknown): obj is LoaderData =>
+    typeof (obj as LoaderData).title === "string" && typeof (obj as LoaderData).locale === "string";
 
 export const links: LinksFunction = () => {
     return [{ rel: "stylesheet", href: tailwindStylesheetUrl }];
 };
 
-export const meta: MetaFunction = () => ({
-    charset: "utf-8",
-    title: "tassad-site on Remix",
-    viewport: "width=device-width,initial-scale=1"
-});
+export const meta: MetaFunction = ({ data }: { data: unknown }) => {
+    const { title } = isLoaderData(data) ? data : { title: "" };
+    return {
+        charset: "utf-8",
+        title,
+        viewport: "width=device-width,initial-scale=1"
+    };
+};
 
 export const loader: LoaderFunction = async ({ request }) => {
     const locale = await i18next.getLocale(request);
-    return json<LoaderData>({ locale });
+
+    const t = await i18next.getFixedT(locale, "root");
+    const title = t("title");
+
+    return json<LoaderData>({ locale, title });
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -44,7 +54,7 @@ export const handle = {
 const App = () => {
     const { locale } = useLoaderData<LoaderData>();
 
-    const { i18n, t } = useTranslation("header");
+    const { i18n, t } = useTranslation("root");
 
     useChangeLanguage(locale);
 

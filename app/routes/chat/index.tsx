@@ -1,10 +1,10 @@
 import type { ActionFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Form, useLoaderData, useTransition } from "@remix-run/react";
-import { useTranslation } from "react-i18next";
-import invariant from "tiny-invariant";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import invariant from "tiny-invariant";
 
 import type { Message } from "~/chat.server";
 import { chatEmitter, Event, users } from "~/chat.server";
@@ -22,10 +22,10 @@ const isLoaderData = (obj: unknown): obj is LoaderData =>
 
 const isMessage = (message: unknown): message is Message => {
     return (
-        !!message &&
-        typeof message === "object" &&
-        !!(message as Message).content &&
-        (message as Message).createdAt instanceof Date
+        typeof (message as Message).username === "string" &&
+        (!(message as Message).content || typeof (message as Message).content === "string") &&
+        (message as Message).createdAt instanceof Date &&
+        typeof (message as Message).type === "number"
     );
 };
 
@@ -72,15 +72,12 @@ export const action: ActionFunction = async ({ request }) => {
         return null;
     }
 
-    chatEmitter.emit(
-        "newmessage",
-        {
-            username,
-            content: message,
-            createdAt: new Date(Date.now())
-        },
-        Event.NewMessage
-    );
+    chatEmitter.emit("newmessage", {
+        username,
+        content: message,
+        createdAt: new Date(Date.now()),
+        type: Event.NewMessage
+    });
 
     return null;
 };
@@ -117,22 +114,21 @@ const Chat = () => {
             invariant(isMessage(message), "event stream newmessage event data must be a Message");
             switch (e.type) {
                 case "userjoin": {
-                    setUsersState((prevState) => [...prevState, message.content]);
-                    message.content += ` ${t("eventChatJoin")}`;
+                    setUsersState((prevState) => [...prevState, message.username]);
                     break;
                 }
                 case "userleave": {
                     setUsersState((prevState) => {
                         const users = [...prevState];
-                        const userIndex = users.indexOf(message.content);
+                        const userIndex = users.indexOf(message.username);
                         if (userIndex > -1) {
                             users.splice(userIndex, 1);
                         }
                         return users;
                     });
-                    message.content += ` ${t("eventChatLeave")}`;
                     break;
                 }
+                default:
             }
             setMessages((prevState) => {
                 return [...prevState, message];
@@ -174,6 +170,32 @@ const Chat = () => {
         }
     };
 
+    const parseMessage = (message: Message, key: React.Key): JSX.Element => {
+        switch (message.type) {
+            // Event.UserJoin and Event.UserLeave
+            case 1:
+            case 2: {
+                return (
+                    <li key={key}>
+                        {`${message.createdAt.toTimeString().slice(0, 5)} `}
+                        <strong>
+                            {`${message.username} `}
+                            {message.type === 1 ? t("eventChatJoin") : t("eventChatLeave")}
+                        </strong>
+                    </li>
+                );
+            }
+            default:
+                return (
+                    <li key={key}>
+                        {`${message.createdAt.toTimeString().slice(0, 5)} `}
+                        <strong>{message.username}: </strong>
+                        {message.content}
+                    </li>
+                );
+        }
+    };
+
     const { t } = useTranslation("chat");
     const { t: tc } = useTranslation();
 
@@ -187,13 +209,7 @@ const Chat = () => {
                     onScroll={handleScroll}
                     className="h-[600px] overflow-y-auto break-words border-x-2 border-t-2 border-black px-2"
                 >
-                    {messages.map((message, i) => (
-                        <li key={i}>
-                            {`${message.createdAt.toTimeString().slice(0, 5)} `}
-                            {message.username && <strong>{message.username}: </strong>}
-                            {message.username ? message.content : <strong>{message.content}</strong>}
-                        </li>
-                    ))}
+                    {messages.map((message, i) => parseMessage(message, i))}
                     <div ref={endRef} />
                 </ul>
                 {!isScrolled && (

@@ -117,7 +117,7 @@ export const SunIcon = ({ className }: { className?: string | undefined }) => (
 );
 
 export const MiniDownArrowIcon = ({ className, flip = false }: { className?: string | undefined; flip?: boolean }) => {
-    const { t } = useTranslation("header");
+    const { t } = useTranslation("root");
 
     return (
         <svg

@@ -18,8 +18,8 @@ export const loader: LoaderFunction = async ({ request }) => {
             start(controller) {
                 const encoder = new TextEncoder();
 
-                const handleMessage = (message: Message, event: Event) => {
-                    switch (event) {
+                const handleMessage = (message: Message) => {
+                    switch (message.type) {
                         case Event.NewMessage: {
                             console.log("[NEW MESSAGE] ", message);
                             controller.enqueue(encoder.encode("event: newmessage\n"));
@@ -50,14 +50,11 @@ export const loader: LoaderFunction = async ({ request }) => {
                     clearInterval(ping);
                     controller.close();
 
-                    chatEmitter.emit(
-                        "userleave",
-                        {
-                            content: username,
-                            createdAt: new Date(Date.now())
-                        },
-                        Event.UserLeave
-                    );
+                    chatEmitter.emit("userleave", {
+                        username,
+                        createdAt: new Date(Date.now()),
+                        type: Event.UserLeave
+                    });
                     const userIndex = users.indexOf(username);
                     if (userIndex > -1) {
                         users.splice(userIndex, 1);
@@ -77,14 +74,11 @@ export const loader: LoaderFunction = async ({ request }) => {
                     return;
                 }
 
-                chatEmitter.emit(
-                    "userjoin",
-                    {
-                        content: username,
-                        createdAt: new Date(Date.now())
-                    },
-                    Event.UserJoin
-                );
+                chatEmitter.emit("userjoin", {
+                    username,
+                    createdAt: new Date(Date.now()),
+                    type: Event.UserJoin
+                });
                 users.push(username);
             }
         }),
