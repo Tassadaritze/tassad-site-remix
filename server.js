@@ -12,7 +12,7 @@ const app = express();
 
 app.use(
     compression({
-        filter: (req) => req.headers["Content-Type"]?.startsWith("text/event-stream")
+        filter: (req, res) => !res.getHeader("Content-Type")?.startsWith("text/event-stream")
     })
 );
 
