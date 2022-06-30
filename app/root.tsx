@@ -8,6 +8,7 @@ import { MoonIcon, SunIcon } from "~/components/Icons";
 import LanguagePicker from "~/components/LanguagePicker";
 import { langCookie } from "~/cookie.server";
 import i18next from "~/i18next.server";
+import { safeRedirect } from "~/utils";
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 
@@ -39,8 +40,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
-    const lang = (await request.formData()).get("lang");
-    return redirect("/", {
+    const formData = await request.formData();
+    const lang = formData.get("lang");
+    const redirectTo = formData.get("redirectTo");
+    return redirect(safeRedirect(redirectTo), {
         headers: {
             "Set-Cookie": await langCookie.serialize(lang)
         }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, useTransition } from "@remix-run/react";
+import { Form, useLocation, useTransition } from "@remix-run/react";
 import { useTranslation } from "react-i18next";
 import { useLocale } from "remix-i18next";
 
@@ -25,6 +25,8 @@ const LanguagePicker = () => {
     const isSubmitting = useTransition().state === "submitting";
     useEffect(() => setIsOpen(false), [isSubmitting]);
 
+    const { pathname } = useLocation();
+
     return (
         <div>
             <button
@@ -39,6 +41,7 @@ const LanguagePicker = () => {
             {isOpen && (
                 <ul className="absolute top-[4rem] -mx-2 border-2 border-black bg-gray-800 p-2">
                     <Form method="post">
+                        <input type="hidden" name="redirectTo" value={pathname} />
                         {supportedLanguages.map((lang, i) => (
                             <li key={i}>
                                 <button name="lang" value={lang}>
