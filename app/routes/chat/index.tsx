@@ -97,7 +97,7 @@ const Chat = () => {
     const transition = useTransition();
     const isSending = transition.state === "submitting";
     useEffect(() => {
-        if (!isSending && inputRef.current && inputRef.current.value.length <= MAX_MESSAGE_LENGTH) {
+        if (isSending && inputRef.current && inputRef.current.value.length <= MAX_MESSAGE_LENGTH) {
             formRef.current?.reset();
             setInputLength(0);
         }
