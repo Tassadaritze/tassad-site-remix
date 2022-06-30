@@ -95,7 +95,7 @@ const Chat = () => {
     const ulRef = useRef<HTMLUListElement>(null);
     const endRef = useRef<HTMLDivElement>(null);
     const transition = useTransition();
-    const isSending = transition.state === "loading";
+    const isSending = transition.state === "submitting";
     useEffect(() => {
         if (isSending && inputRef.current && inputRef.current.value.length <= MAX_MESSAGE_LENGTH) {
             formRef.current?.reset();
