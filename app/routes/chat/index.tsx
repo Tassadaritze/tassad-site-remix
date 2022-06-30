@@ -91,16 +91,17 @@ const Chat = () => {
     const [inputLength, setInputLength] = useState(0);
 
     const formRef = useRef<HTMLFormElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     const ulRef = useRef<HTMLUListElement>(null);
     const endRef = useRef<HTMLDivElement>(null);
     const transition = useTransition();
-    const isSending = transition.state === "loading";
+    const isSending = transition.state === "submitting";
     useEffect(() => {
-        if (isSending && inputLength <= MAX_MESSAGE_LENGTH) {
+        if (!isSending && inputRef.current && inputRef.current.value.length <= MAX_MESSAGE_LENGTH) {
             formRef.current?.reset();
             setInputLength(0);
         }
-    }, [inputLength, isSending]);
+    }, [isSending]);
 
     useEffect(() => {
         const handleMessage = (e: MessageEvent) => {
@@ -228,8 +229,9 @@ const Chat = () => {
                             name="message"
                             placeholder={t("chatMessageInputPlaceholder")}
                             autoComplete="off"
-                            className="border-2 border-black"
                             onInput={(e) => setInputLength(e.currentTarget.value.length)}
+                            ref={inputRef}
+                            className="border-2 border-black"
                         />
                         {inputLength + 100 > MAX_MESSAGE_LENGTH && (
                             <p className={`w-fit self-end px-2${inputLengthStyle}`}>
