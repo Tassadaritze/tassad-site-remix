@@ -2,7 +2,7 @@ import type { LoaderFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
 import type { Message } from "~/chat.server";
-import { chatEmitter, Event, users } from "~/chat.server";
+import { addToHistory, chatEmitter, Event, users } from "~/chat.server";
 import { getSession } from "~/session.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -50,11 +50,13 @@ export const loader: LoaderFunction = async ({ request }) => {
                     clearInterval(ping);
                     controller.close();
 
-                    chatEmitter.emit("userleave", {
+                    const userLeave = {
                         username,
                         createdAt: new Date(Date.now()),
                         type: Event.UserLeave
-                    });
+                    };
+                    addToHistory(userLeave);
+                    chatEmitter.emit("userleave", userLeave);
                     const userIndex = users.indexOf(username);
                     if (userIndex > -1) {
                         users.splice(userIndex, 1);
@@ -74,11 +76,13 @@ export const loader: LoaderFunction = async ({ request }) => {
                     return;
                 }
 
-                chatEmitter.emit("userjoin", {
+                const userJoin = {
                     username,
                     createdAt: new Date(Date.now()),
                     type: Event.UserJoin
-                });
+                };
+                addToHistory(userJoin);
+                chatEmitter.emit("userjoin", userJoin);
                 users.push(username);
             }
         }),

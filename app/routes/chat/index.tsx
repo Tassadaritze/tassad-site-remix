@@ -7,12 +7,13 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
 import type { Message } from "~/chat.server";
-import { chatEmitter, Event, users } from "~/chat.server";
+import { addToHistory, chatEmitter, Event, messageHistory, users } from "~/chat.server";
 import i18next from "~/i18next.server";
 import { getSession } from "~/session.server";
 
 type LoaderData = {
     users: typeof users;
+    messageHistory: typeof messageHistory;
     title: string;
     description: string;
 };
@@ -20,6 +21,7 @@ type LoaderData = {
 const isLoaderData = (obj: unknown): obj is LoaderData =>
     typeof (obj as LoaderData).title === "string" && typeof (obj as LoaderData).description === "string";
 
+// only used client-side for now, re-declare on server side if necessary
 const isMessage = (message: unknown): message is Message => {
     return (
         typeof (message as Message).username === "string" &&
@@ -49,7 +51,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     const t = await i18next.getFixedT(request, "chat");
     const { title, description } = { title: t("title"), description: t("description") };
 
-    return json<LoaderData>({ users, title, description });
+    return json<LoaderData>({ users, messageHistory, title, description });
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -72,20 +74,26 @@ export const action: ActionFunction = async ({ request }) => {
         return null;
     }
 
-    chatEmitter.emit("newmessage", {
+    const newMessage: Message = {
         username,
         content: message,
         createdAt: new Date(Date.now()),
         type: Event.NewMessage
-    });
+    };
+    addToHistory(newMessage);
+    chatEmitter.emit("newmessage", newMessage);
 
     return null;
 };
 
 const Chat = () => {
-    const { users } = useLoaderData<LoaderData>();
+    const { users, messageHistory } = useLoaderData<LoaderData>();
+    messageHistory.map((message) => {
+        message.createdAt = new Date(message.createdAt);
+        return message;
+    });
 
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<Message[]>(messageHistory);
     const [isScrolled, setIsScrolled] = useState(true);
     const [usersState, setUsersState] = useState(users);
     const [inputLength, setInputLength] = useState(0);
