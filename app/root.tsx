@@ -67,8 +67,8 @@ const App = () => {
                 <Meta />
                 <Links />
             </head>
-            <body className="h-fit w-full">
-                <header className="flex h-16 min-w-full items-center justify-between bg-gray-800 text-4xl text-white">
+            <body className="h-fit">
+                <header className="flex h-16 items-center justify-between overflow-x-auto bg-gray-800 text-4xl text-white">
                     <div className="flex gap-x-8 px-4">
                         <Link to="/" className="hover:text-blue-600 hover:underline">
                             {t("home")}
@@ -76,7 +76,6 @@ const App = () => {
                         <Link to="/chat" className="hover:text-blue-600 hover:underline">
                             {t("chat")}
                         </Link>
-                        <p>Placeholder</p>
                     </div>
                     <div className="flex gap-x-4 px-4">
                         <MoonIcon />

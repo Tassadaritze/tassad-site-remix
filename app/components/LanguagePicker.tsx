@@ -39,11 +39,11 @@ const LanguagePicker = () => {
                 <MiniDownArrowIcon flip={isOpen} />
             </button>
             {isOpen && (
-                <ul className="absolute top-[4rem] -mx-2 border-2 border-black bg-gray-800 p-2">
+                <ul className="absolute top-[4rem] right-0 z-10 min-w-[11.75rem] border-2 border-black bg-gray-800 px-2">
                     <Form method="post">
                         <input type="hidden" name="redirectTo" value={pathname} />
                         {supportedLanguages.map((lang, i) => (
-                            <li key={i}>
+                            <li key={i} className="py-1">
                                 <button name="lang" value={lang}>
                                     {new Intl.DisplayNames(lang, { type: "language" }).of(lang)}
                                 </button>
