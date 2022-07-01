@@ -1,6 +1,7 @@
 import { json, redirect } from "@remix-run/node";
 import type { LinksFunction, LoaderFunction, MetaFunction, ActionFunction } from "@remix-run/node";
 import { Link, Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
 import { MoonIcon, SunIcon } from "~/components/Icons";
@@ -56,19 +57,26 @@ export const handle = {
 
 const App = () => {
     const { locale } = useLoaderData<LoaderData>();
-
     const { i18n, t } = useTranslation("root");
-
     useChangeLanguage(locale);
 
+    const [isDarkMode, setIsDarkMode] = useState(true);
+
+    useEffect(() => {
+        setIsDarkMode(
+            localStorage.theme === "dark" ||
+                (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches)
+        );
+    }, []);
+
     return (
-        <html lang={locale} dir={i18n.dir()} className="h-full">
+        <html lang={locale} dir={i18n.dir()} className={`h-full${isDarkMode ? " dark" : ""}`}>
             <head>
                 <Meta />
                 <Links />
             </head>
-            <body className="h-fit">
-                <header className="flex h-16 items-center justify-between overflow-x-auto bg-gray-800 text-4xl text-white">
+            <body className="h-fit bg-white-alpha-1 dark:bg-violet-dark-2">
+                <header className="flex h-16 items-center justify-between overflow-x-auto bg-violet-9 text-4xl text-mauve-dark-12 dark:bg-violet-dark-9">
                     <div className="flex gap-x-8 px-4">
                         <Link to="/" className="hover:text-blue-600 hover:underline">
                             {t("home")}
@@ -78,8 +86,11 @@ const App = () => {
                         </Link>
                     </div>
                     <div className="flex gap-x-4 px-4">
-                        <MoonIcon />
-                        <SunIcon />
+                        {isDarkMode ? (
+                            <MoonIcon className="stroke-mauve-dark-12" />
+                        ) : (
+                            <SunIcon className="stroke-mauve-dark-12" />
+                        )}
                         <LanguagePicker />
                     </div>
                 </header>

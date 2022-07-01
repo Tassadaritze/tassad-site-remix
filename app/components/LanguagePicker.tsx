@@ -36,10 +36,10 @@ const LanguagePicker = () => {
                 className="flex place-items-center gap-x-2"
             >
                 {new Intl.DisplayNames(locale, { type: "language" }).of(locale)}
-                <MiniDownArrowIcon flip={isOpen} />
+                <MiniDownArrowIcon flip={isOpen} className="stroke-mauve-dark-12" />
             </button>
             {isOpen && (
-                <ul className="absolute top-[4rem] right-0 z-10 min-w-[11.75rem] border-2 border-black bg-gray-800 px-2">
+                <ul className="border-black bg-gray-800 absolute top-[4rem] right-0 z-10 min-w-[11.75rem] border-2 px-2">
                     <Form method="post">
                         <input type="hidden" name="redirectTo" value={pathname} />
                         {supportedLanguages.map((lang, i) => (

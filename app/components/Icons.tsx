@@ -1,12 +1,11 @@
 import { useTranslation } from "react-i18next";
 
 export const MoonIcon = ({ className }: { className?: string | undefined }) => (
-    <svg viewBox="0 0 703.22 692.44" height={48} className={className}>
+    <svg viewBox="0 0 760.59 758.56" height={48} className={className}>
         <path
-            d="M86.22,580.92c101.24,125.89,262.06,180.19,401.4,136.8,198-61.66,294.79-302.54,231.3-471.6-31.79-84.66-97.7-135.15-137.7-160.2,5.4,103.5,61.2,250.2-90,405C337.21,648.6,187.92,587.22,86.22,580.92Z"
-            transform="translate(-51.05 -56.03)"
+            d="M499.85,500c23.56-24,85.85-93.66,103.94-204.36C623.94,172.4,576.22,78.29,560.66,50.29c15.73,9.16,168.63,101.8,187.38,289.2,17.14,171.25-91.29,286.09-106.77,301.94C620.86,661,520.4,753.16,369,749.61c-202.2-4.73-311-176-318.9-188.79,28.58,15.56,129.3,65.83,258.09,40.3C409.42,581.07,474.27,524.85,499.85,500Z"
+            transform="translate(-5.28 -7.15)"
             fill="none"
-            stroke="white"
             strokeMiterlimit="10"
             strokeWidth="32"
         />
@@ -15,23 +14,13 @@ export const MoonIcon = ({ className }: { className?: string | undefined }) => (
 
 export const SunIcon = ({ className }: { className?: string | undefined }) => (
     <svg viewBox="0 0 682 682" height={48} className={className}>
-        <circle
-            cx="341"
-            cy="341"
-            r="100"
-            fill="none"
-            stroke="white"
-            strokeLinecap="round"
-            strokeMiterlimit="10"
-            strokeWidth="32"
-        />
+        <circle cx="341" cy="341" r="100" fill="none" strokeLinecap="round" strokeMiterlimit="10" strokeWidth="32" />
         <line
             x1="341"
             y1="16"
             x2="341"
             y2="166"
             fill="none"
-            stroke="white"
             strokeLinecap="round"
             strokeMiterlimit="10"
             strokeWidth="32"
@@ -42,7 +31,6 @@ export const SunIcon = ({ className }: { className?: string | undefined }) => (
             x2="341"
             y2="666"
             fill="none"
-            stroke="white"
             strokeLinecap="round"
             strokeMiterlimit="10"
             strokeWidth="32"
@@ -53,7 +41,6 @@ export const SunIcon = ({ className }: { className?: string | undefined }) => (
             x2="166"
             y2="341"
             fill="none"
-            stroke="white"
             strokeLinecap="round"
             strokeMiterlimit="10"
             strokeWidth="32"
@@ -64,7 +51,6 @@ export const SunIcon = ({ className }: { className?: string | undefined }) => (
             x2="666"
             y2="341"
             fill="none"
-            stroke="white"
             strokeLinecap="round"
             strokeMiterlimit="10"
             strokeWidth="32"
@@ -75,7 +61,6 @@ export const SunIcon = ({ className }: { className?: string | undefined }) => (
             x2="574.03"
             y2="107.97"
             fill="none"
-            stroke="white"
             strokeLinecap="round"
             strokeMiterlimit="10"
             strokeWidth="32"
@@ -86,7 +71,6 @@ export const SunIcon = ({ className }: { className?: string | undefined }) => (
             x2="214.03"
             y2="467.97"
             fill="none"
-            stroke="white"
             strokeLinecap="round"
             strokeMiterlimit="10"
             strokeWidth="32"
@@ -97,7 +81,6 @@ export const SunIcon = ({ className }: { className?: string | undefined }) => (
             x2="214.03"
             y2="214.03"
             fill="none"
-            stroke="white"
             strokeLinecap="round"
             strokeMiterlimit="10"
             strokeWidth="32"
@@ -108,7 +91,6 @@ export const SunIcon = ({ className }: { className?: string | undefined }) => (
             x2="574.03"
             y2="574.03"
             fill="none"
-            stroke="white"
             strokeLinecap="round"
             strokeMiterlimit="10"
             strokeWidth="32"
@@ -130,7 +112,6 @@ export const MiniDownArrowIcon = ({ className, flip = false }: { className?: str
             <polyline
                 points="11.31 11.31 411.31 411.31 811.31 11.31"
                 fill="none"
-                stroke="white"
                 strokeMiterlimit="10"
                 strokeWidth="32"
             />
