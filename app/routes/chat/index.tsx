@@ -88,10 +88,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 const Chat = () => {
     const { users, messageHistory } = useLoaderData<LoaderData>();
-    messageHistory.map((message) => {
-        message.createdAt = new Date(message.createdAt);
-        return message;
-    });
+    messageHistory.forEach((message) => (message.createdAt = new Date(message.createdAt)));
 
     const [messages, setMessages] = useState<Message[]>(messageHistory);
     const [isScrolled, setIsScrolled] = useState(true);
