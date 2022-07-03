@@ -79,16 +79,20 @@ const ChatUsernameForm = () => {
     return (
         <main className="relative top-[20vh] flex items-center justify-center align-middle">
             <Form method="post" className="flex flex-col items-center">
-                {typeof error === "string" ? <p className="text-red-700">{error}</p> : null}
-                <label className="flex flex-col items-center py-4 text-4xl">
+                {typeof error === "string" ? <p className="text-red-11 dark:text-red-dark-11">{error}</p> : null}
+                <label className="flex flex-col items-center py-4 text-4xl dark:text-mauve-dark-12">
                     {t("chatUsernameFormLabel")}{" "}
                     <input
                         name="username"
                         maxLength={USERNAME_CHAR_LIMIT}
-                        className={`w-[32em] border-2 border-black px-2${error ? " border-red-700" : ""}`}
+                        className={`w-[32em] border-2 px-2 text-violet-11 ${
+                            error ? "border-red-8 dark:border-red-dark-8" : ""
+                        }`}
                     />
                 </label>
-                <button className="rounded-md bg-gray-300 px-2 text-4xl hover:bg-gray-200">{tc("submit")}</button>
+                <button className="border-1 rounded-md border-violet-7 bg-violet-9 px-2 text-4xl text-violet-dark-12 hover:border-violet-8 hover:bg-violet-10 dark:border-violet-dark-7 dark:bg-violet-dark-9 dark:hover:border-violet-dark-8 dark:hover:bg-violet-dark-10">
+                    {tc("submit")}
+                </button>
             </Form>
         </main>
     );

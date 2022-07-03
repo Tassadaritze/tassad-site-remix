@@ -28,7 +28,14 @@ const LanguagePicker = () => {
     const { pathname } = useLocation();
 
     return (
-        <div>
+        <div
+            onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget)) {
+                    setIsOpen(false);
+                }
+            }}
+            className="flex items-center"
+        >
             <button
                 onClick={() => {
                     setIsOpen((prevState) => !prevState);
@@ -36,14 +43,17 @@ const LanguagePicker = () => {
                 className="flex place-items-center gap-x-2"
             >
                 {new Intl.DisplayNames(locale, { type: "language" }).of(locale)}
-                <MiniDownArrowIcon flip={isOpen} className="stroke-mauve-dark-12" />
+                <MiniDownArrowIcon height={12} flip={isOpen} className="stroke-mauve-dark-12" />
             </button>
             {isOpen && (
-                <ul className="border-black bg-gray-800 absolute top-[4rem] right-0 z-10 min-w-[11.75rem] border-2 px-2">
+                <ul className="absolute absolute right-0 top-[4rem] z-10 min-w-[11.75rem] border-2 border-violet-6 bg-violet-3 text-violet-12 dark:border-violet-dark-6 dark:bg-violet-dark-3 dark:text-violet-dark-12">
                     <Form method="post">
                         <input type="hidden" name="redirectTo" value={pathname} />
                         {supportedLanguages.map((lang, i) => (
-                            <li key={i} className="py-1">
+                            <li
+                                key={i}
+                                className="bg-violet-3 py-1 px-2 hover:bg-violet-4 dark:bg-violet-dark-3 dark:hover:bg-violet-dark-4"
+                            >
                                 <button name="lang" value={lang}>
                                     {new Intl.DisplayNames(lang, { type: "language" }).of(lang)}
                                 </button>

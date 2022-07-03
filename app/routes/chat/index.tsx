@@ -183,7 +183,9 @@ const Chat = () => {
             case 2: {
                 return (
                     <li key={key}>
-                        {`${message.createdAt.toTimeString().slice(0, 5)} `}
+                        <span className="text-mauve-11 dark:text-mauve-dark-11">{`${message.createdAt
+                            .toTimeString()
+                            .slice(0, 5)} `}</span>
                         <strong>
                             {`${message.username} `}
                             {message.type === 1 ? t("eventChatJoin") : t("eventChatLeave")}
@@ -194,7 +196,9 @@ const Chat = () => {
             default:
                 return (
                     <li key={key}>
-                        {`${message.createdAt.toTimeString().slice(0, 5)} `}
+                        <span className="text-mauve-11 dark:text-mauve-dark-11">{`${message.createdAt
+                            .toTimeString()
+                            .slice(0, 5)} `}</span>
                         <strong>{message.username}: </strong>
                         {message.content}
                     </li>
@@ -205,7 +209,8 @@ const Chat = () => {
     const { t } = useTranslation("chat");
     const { t: tc } = useTranslation();
 
-    const inputLengthStyle = inputLength > MAX_MESSAGE_LENGTH ? " text-red-700" : "";
+    const inputLengthStyle =
+        inputLength > MAX_MESSAGE_LENGTH ? "text-red-11 dark:text-red-dark-11" : "text-blue-11 dark:text-blue-dark-11";
 
     return (
         <div className="flex">
@@ -213,20 +218,20 @@ const Chat = () => {
                 <ul
                     ref={ulRef}
                     onScroll={handleScroll}
-                    className="h-[600px] overflow-y-auto break-words border-x-2 border-t-2 border-black px-2"
+                    className="h-[600px] overflow-y-auto break-words border-x-2 border-t-2 border-violet-6 bg-violet-3 px-2 text-mauve-12 dark:border-violet-dark-6 dark:bg-violet-dark-3 dark:text-mauve-dark-12"
                 >
                     {messages.map((message, i) => parseMessage(message, i))}
+                    {!isScrolled && (
+                        <button
+                            type="button"
+                            onClick={() => endRef.current?.scrollIntoView()}
+                            className="absolute bottom-[10%] left-[40%] rounded-md border-violet-alpha-7 bg-violet-alpha-9 px-2 text-mauve-dark-12 hover:border-violet-alpha-8 hover:bg-violet-alpha-10 dark:border-violet-dark-alpha-7 dark:bg-violet-dark-alpha-9 dark:hover:border-violet-dark-alpha-8 dark:hover:bg-violet-dark-alpha-10"
+                        >
+                            {t("scrollToNewMessages")}
+                        </button>
+                    )}
                     <div ref={endRef} />
                 </ul>
-                {!isScrolled && (
-                    <button
-                        type="button"
-                        onClick={() => endRef.current?.scrollIntoView()}
-                        className="absolute bottom-[10%] left-[40%] rounded-md bg-black/70 px-2 text-white hover:bg-gray-900/50"
-                    >
-                        {t("scrollToNewMessages")}
-                    </button>
-                )}
                 <Form method="post" ref={formRef} className="flex">
                     <div className="flex w-full flex-col">
                         <input
@@ -236,15 +241,15 @@ const Chat = () => {
                             autoComplete="off"
                             onInput={(e) => setInputLength(e.currentTarget.value.length)}
                             ref={inputRef}
-                            className="border-2 border-black"
+                            className="border-2 border-violet-6 pl-1 text-violet-11 ring-violet-7 dark:border-violet-dark-6 dark:ring-violet-dark-7"
                         />
                         {inputLength + 100 > MAX_MESSAGE_LENGTH && (
-                            <p className={`w-fit self-end px-2${inputLengthStyle}`}>
+                            <p className={`w-fit self-end px-2 ${inputLengthStyle}`}>
                                 {MAX_MESSAGE_LENGTH - inputLength}
                             </p>
                         )}
                     </div>
-                    <button className="h-fit border-y-2 border-r-2 border-black bg-gray-400 px-2 hover:bg-gray-300">
+                    <button className="ml-1 h-fit border-2 border-violet-7 bg-violet-9 px-2 text-violet-dark-12 hover:border-violet-8 hover:bg-violet-10 dark:border-violet-dark-7 dark:bg-violet-dark-9 dark:hover:border-violet-dark-8 dark:hover:bg-violet-dark-10">
                         {tc("send")}
                     </button>
                 </Form>
@@ -258,21 +263,21 @@ const ChatUsers = ({ users }: { users: string[] }) => {
     const [isUsersVisible, setIsUsersVisible] = useState(false);
 
     const styleColours = isUsersVisible
-        ? " text-black bg-gray-400 hover:bg-gray-300 shadow-[inset_0_2px_4px_0_rgba(0,0,0,0.5)]"
-        : " text-white bg-gray-500 hover:bg-gray-400";
+        ? "bg-violet-5 dark:bg-violet-dark-5"
+        : "bg-violet-3 dark:bg-violet-dark-3 hover:bg-violet-4 dark:hover:bg-violet-dark-4";
 
     const { t } = useTranslation("chat");
 
     return (
-        <div className="relative inset-2 flex max-h-[600px] flex-col">
+        <div className="relative inset-2 ml-2 flex max-h-[600px] flex-col">
             <button
                 onClick={() => setIsUsersVisible((prevState) => !prevState)}
-                className={`w-fit border-y-2 border-r-2 border-black p-1 text-4xl ${styleColours}`}
+                className={`w-fit border-2 border-violet-7 p-1 text-4xl text-violet-11 hover:border-violet-8 dark:border-violet-dark-7 dark:text-violet-dark-11 dark:hover:border-violet-dark-8 ${styleColours}`}
             >
                 {t("users")}
             </button>
             {isUsersVisible && (
-                <ul className="w-fit list-outside list-disc overflow-y-auto overflow-x-clip bg-black px-6 text-white">
+                <ul className="h-full divide-y divide-violet-6 overflow-y-auto overflow-x-clip rounded-md bg-violet-2 p-1 dark:divide-violet-dark-6 dark:bg-violet-dark-2">
                     {users.map((user, i) => (
                         <li key={i}>{user}</li>
                     ))}

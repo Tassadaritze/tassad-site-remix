@@ -1,11 +1,11 @@
+import type { ActionFunction, LinksFunction, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import type { LinksFunction, LoaderFunction, MetaFunction, ActionFunction } from "@remix-run/node";
 import { Link, Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import { useChangeLanguage } from "remix-i18next";
 import { useTranslation } from "react-i18next";
-import { MoonIcon, SunIcon } from "~/components/Icons";
+import { useChangeLanguage } from "remix-i18next";
 
+import ColourSchemePicker from "~/components/ColourSchemePicker";
 import LanguagePicker from "~/components/LanguagePicker";
 import { langCookie } from "~/cookie.server";
 import i18next from "~/i18next.server";
@@ -70,12 +70,12 @@ const App = () => {
     }, []);
 
     return (
-        <html lang={locale} dir={i18n.dir()} className={`h-full${isDarkMode ? " dark" : ""}`}>
+        <html lang={locale} dir={i18n.dir()} className={`h-full ${isDarkMode ? "dark" : ""}`}>
             <head>
                 <Meta />
                 <Links />
             </head>
-            <body className="h-fit bg-white-alpha-1 dark:bg-violet-dark-2">
+            <body className="h-fit bg-white-alpha-1 text-mauve-11 dark:bg-violet-dark-1 dark:text-mauve-dark-11">
                 <header className="flex h-16 items-center justify-between overflow-x-auto bg-violet-9 text-4xl text-mauve-dark-12 dark:bg-violet-dark-9">
                     <div className="flex gap-x-8 px-4">
                         <Link to="/" className="hover:text-blue-600 hover:underline">
@@ -86,11 +86,7 @@ const App = () => {
                         </Link>
                     </div>
                     <div className="flex gap-x-4 px-4">
-                        {isDarkMode ? (
-                            <MoonIcon className="stroke-mauve-dark-12" />
-                        ) : (
-                            <SunIcon className="stroke-mauve-dark-12" />
-                        )}
+                        <ColourSchemePicker isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
                         <LanguagePicker />
                     </div>
                 </header>
