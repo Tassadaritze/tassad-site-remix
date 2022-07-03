@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { useTransition } from "@remix-run/react";
+import { useTranslation } from "react-i18next";
 
 import { MonitorIcon, MoonIcon, SunIcon } from "~/components/Icons";
 
@@ -19,6 +20,8 @@ const ColourSchemePicker = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState<SelectedMode | null>(null);
+
+    const { t } = useTranslation("root");
 
     useEffect(() => {
         switch (localStorage.theme) {
@@ -52,6 +55,7 @@ const ColourSchemePicker = ({
                 onClick={() => {
                     setIsOpen((prevState) => !prevState);
                 }}
+                aria-label={t("switchTheme")}
             >
                 {isDarkMode ? (
                     <MoonIcon className="stroke-mauve-dark-12" />
@@ -75,10 +79,11 @@ const ColourSchemePicker = ({
                                 setSelected(SelectedMode.Dark);
                                 setIsDarkMode(true);
                             }}
+                            aria-label={t("switchToDarkTheme")}
                             className="flex w-full items-center gap-x-2 px-2"
                         >
                             <MoonIcon height={32} className="stroke-violet-11 dark:stroke-violet-dark-11" />
-                            Dark
+                            {t("darkTheme")}
                         </button>
                     </li>
                     <li
@@ -95,10 +100,11 @@ const ColourSchemePicker = ({
                                 setSelected(SelectedMode.Light);
                                 setIsDarkMode(false);
                             }}
+                            aria-label={t("switchToLightTheme")}
                             className="flex w-full items-center gap-x-2 px-2"
                         >
                             <SunIcon height={32} className="stroke-violet-11 dark:stroke-violet-dark-11" />
-                            Light
+                            {t("lightTheme")}
                         </button>
                     </li>
                     <li
@@ -115,10 +121,11 @@ const ColourSchemePicker = ({
                                 setSelected(SelectedMode.System);
                                 setIsDarkMode(window.matchMedia("(prefers-color-scheme: dark)").matches);
                             }}
+                            aria-label={t("switchToSystemTheme")}
                             className="flex w-full items-center gap-x-2 px-2"
                         >
                             <MonitorIcon height={32} className="stroke-violet-11 dark:stroke-violet-dark-11" />
-                            System
+                            {t("systemTheme")}
                         </button>
                     </li>
                 </ul>

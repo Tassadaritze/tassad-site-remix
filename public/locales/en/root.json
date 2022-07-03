@@ -3,7 +3,13 @@
 
   "home": "Home",
   "chat": "Chat",
-  "darkMode": "Dark Mode",
-  "lightMode": "Light Mode",
-  "miniArrow": "Mini Arrow"
+  "miniArrow": "Mini Arrow",
+  "switchLocale": "Change language",
+  "switchTheme": "Switch theme",
+  "switchToDarkTheme": "Switch to Dark theme",
+  "switchToLightTheme": "Switch to Light theme",
+  "switchToSystemTheme": "Use system preference for theme",
+  "darkTheme": "Dark",
+  "lightTheme": "Light",
+  "systemTheme": "System"
 }

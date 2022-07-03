@@ -3,7 +3,13 @@
 
   "home": "Главная",
   "chat": "Чат",
-  "darkMode": "Ночной режим",
-  "lightMode": "Дневной режим",
-  "miniArrow": "Стрелочка"
+  "miniArrow": "Стрелочка",
+  "switchLocale": "Сменить язык",
+  "switchTheme": "Сменить тему",
+  "switchToDarkTheme": "Переключиться на тёмную тему",
+  "switchToLightTheme": "Переключиться на светлую тему",
+  "switchToSystemTheme": "Выбрать тему по системным предпочтениям",
+  "darkTheme": "Тёмная",
+  "lightTheme": "Светлая",
+  "systemTheme": "Системная"
 }

@@ -7,7 +7,7 @@ import { MiniDownArrowIcon } from "~/components/Icons";
 
 const LanguagePicker = () => {
     const locale = useLocale();
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation("root");
 
     const supportedLanguages = i18n.options.supportedLngs ? [...i18n.options.supportedLngs] : [];
     if (supportedLanguages.length) {
@@ -40,6 +40,7 @@ const LanguagePicker = () => {
                 onClick={() => {
                     setIsOpen((prevState) => !prevState);
                 }}
+                aria-label={t("switchLocale")}
                 className="flex place-items-center gap-x-2"
             >
                 {new Intl.DisplayNames(locale, { type: "language" }).of(locale)}
