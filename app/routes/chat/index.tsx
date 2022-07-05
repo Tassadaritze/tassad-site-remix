@@ -213,48 +213,51 @@ const Chat = () => {
         inputLength > MAX_MESSAGE_LENGTH ? "text-red-11 dark:text-red-dark-11" : "text-blue-11 dark:text-blue-dark-11";
 
     return (
-        <div className="flex">
-            <main className="flex-gap-y-8 relative inset-2 flex w-11/12 flex-col lg:w-1/2">
-                <ul
-                    ref={ulRef}
-                    onScroll={handleScroll}
-                    className="h-[600px] overflow-y-auto break-words border-x-2 border-t-2 border-violet-6 bg-violet-3 px-2 text-mauve-12 dark:border-violet-dark-6 dark:bg-violet-dark-3 dark:text-mauve-dark-12"
-                >
-                    {messages.map((message, i) => parseMessage(message, i))}
-                    {!isScrolled && (
-                        <button
-                            type="button"
-                            onClick={() => endRef.current?.scrollIntoView()}
-                            className="absolute bottom-[10%] left-[40%] rounded-md border-violet-alpha-7 bg-violet-alpha-9 px-2 text-mauve-dark-12 hover:border-violet-alpha-8 hover:bg-violet-alpha-10 dark:border-violet-dark-alpha-7 dark:bg-violet-dark-alpha-9 dark:hover:border-violet-dark-alpha-8 dark:hover:bg-violet-dark-alpha-10"
-                        >
-                            {t("scrollToNewMessages")}
-                        </button>
-                    )}
-                    <div ref={endRef} />
-                </ul>
-                <Form method="post" ref={formRef} className="flex">
-                    <div className="flex w-full flex-col">
-                        <input
-                            type="text"
-                            name="message"
-                            placeholder={t("chatMessageInputPlaceholder")}
-                            autoComplete="off"
-                            onInput={(e) => setInputLength(e.currentTarget.value.length)}
-                            ref={inputRef}
-                            className="border-2 border-violet-6 pl-1 text-violet-11 ring-violet-7 dark:border-violet-dark-6 dark:ring-violet-dark-7"
-                        />
-                        {inputLength + 100 > MAX_MESSAGE_LENGTH && (
-                            <p className={`w-fit self-end px-2 ${inputLengthStyle}`}>
-                                {MAX_MESSAGE_LENGTH - inputLength}
-                            </p>
+        <div>
+            <p className="text-2xl text-amber-11 dark:text-amber-dark-11">{t("herokuInfo")}</p>
+            <div className="flex">
+                <main className="flex-gap-y-8 relative inset-2 flex w-11/12 flex-col lg:w-1/2">
+                    <ul
+                        ref={ulRef}
+                        onScroll={handleScroll}
+                        className="h-[600px] overflow-y-auto break-words border-x-2 border-t-2 border-violet-6 bg-violet-3 px-2 text-mauve-12 dark:border-violet-dark-6 dark:bg-violet-dark-3 dark:text-mauve-dark-12"
+                    >
+                        {messages.map((message, i) => parseMessage(message, i))}
+                        {!isScrolled && (
+                            <button
+                                type="button"
+                                onClick={() => endRef.current?.scrollIntoView()}
+                                className="absolute bottom-[10%] left-[40%] rounded-md border-violet-alpha-7 bg-violet-alpha-9 px-2 text-mauve-dark-12 hover:border-violet-alpha-8 hover:bg-violet-alpha-10 dark:border-violet-dark-alpha-7 dark:bg-violet-dark-alpha-9 dark:hover:border-violet-dark-alpha-8 dark:hover:bg-violet-dark-alpha-10"
+                            >
+                                {t("scrollToNewMessages")}
+                            </button>
                         )}
-                    </div>
-                    <button className="ml-1 h-fit border-2 border-violet-7 bg-violet-9 px-2 text-violet-dark-12 hover:border-violet-8 hover:bg-violet-10 dark:border-violet-dark-7 dark:bg-violet-dark-9 dark:hover:border-violet-dark-8 dark:hover:bg-violet-dark-10">
-                        {tc("send")}
-                    </button>
-                </Form>
-            </main>
-            <ChatUsers users={usersState} />
+                        <div ref={endRef} />
+                    </ul>
+                    <Form method="post" ref={formRef} className="flex">
+                        <div className="flex w-full flex-col">
+                            <input
+                                type="text"
+                                name="message"
+                                placeholder={t("chatMessageInputPlaceholder")}
+                                autoComplete="off"
+                                onInput={(e) => setInputLength(e.currentTarget.value.length)}
+                                ref={inputRef}
+                                className="border-2 border-violet-6 pl-1 text-violet-11 ring-violet-7 dark:border-violet-dark-6 dark:ring-violet-dark-7"
+                            />
+                            {inputLength + 100 > MAX_MESSAGE_LENGTH && (
+                                <p className={`w-fit self-end px-2 ${inputLengthStyle}`}>
+                                    {MAX_MESSAGE_LENGTH - inputLength}
+                                </p>
+                            )}
+                        </div>
+                        <button className="ml-1 h-fit border-2 border-violet-7 bg-violet-9 px-2 text-violet-dark-12 hover:border-violet-8 hover:bg-violet-10 dark:border-violet-dark-7 dark:bg-violet-dark-9 dark:hover:border-violet-dark-8 dark:hover:bg-violet-dark-10">
+                            {tc("send")}
+                        </button>
+                    </Form>
+                </main>
+                <ChatUsers users={usersState} />
+            </div>
         </div>
     );
 };

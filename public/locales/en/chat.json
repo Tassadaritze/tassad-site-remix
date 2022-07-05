@@ -6,5 +6,6 @@
   "scrollToNewMessages": "Scroll to new messages",
   "users": "Users",
   "eventChatJoin": "joined the chat",
-  "eventChatLeave": "left the chat"
+  "eventChatLeave": "left the chat",
+  "herokuInfo": "All of the remaining known bugs with the chat seem to stem from Heroku. I assume these would not happen with self-hosting."
 }
