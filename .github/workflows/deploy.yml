@@ -142,7 +142,7 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release -d
+        run: npx semantic-release --branches main -d
 
 #      - name: Deploy
 #        run: git push heroku main
