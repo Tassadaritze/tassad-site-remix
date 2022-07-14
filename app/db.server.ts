@@ -1,4 +1,7 @@
 import { PrismaClient } from "@prisma/client";
+import type { Message } from "@prisma/client";
+
+const MESSAGE_LIMIT = 100;
 
 let prisma: PrismaClient;
 
@@ -12,6 +15,25 @@ declare global {
 // in production we'll have a single connection to the DB.
 if (process.env.NODE_ENV === "production") {
     prisma = new PrismaClient();
+
+    __db__.$use(async (params, next) => {
+        if (params.action === "create" && params.model === "Message") {
+            const result = (await next(params)) as Message;
+            const messageCount = await __db__.message.count();
+            if (messageCount > MESSAGE_LIMIT) {
+                await __db__.message.deleteMany({
+                    where: {
+                        id: {
+                            lte: result.id - MESSAGE_LIMIT
+                        }
+                    }
+                });
+            }
+            return result;
+        } else {
+            return next(params);
+        }
+    });
 } else {
     if (!global.__db__) {
         global.__db__ = new PrismaClient();

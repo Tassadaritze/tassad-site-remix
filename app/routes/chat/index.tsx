@@ -7,13 +7,14 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 
 import type { Message } from "~/chat.server";
-import { addToHistory, chatEmitter, Event, messageHistory, users } from "~/chat.server";
+import { chatEmitter, Event, users } from "~/chat.server";
 import i18next from "~/i18next.server";
+import { createMessage, getMessages } from "~/models/message.server";
 import { getSession } from "~/session.server";
 
 type LoaderData = {
     users: typeof users;
-    messageHistory: typeof messageHistory;
+    messageHistory: Awaited<ReturnType<typeof getMessages>>;
     title: string;
     description: string;
 };
@@ -51,6 +52,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     const t = await i18next.getFixedT(request, "chat");
     const { title, description } = { title: t("title"), description: t("description") };
 
+    const messageHistory = await getMessages();
+
     return json<LoaderData>({ users, messageHistory, title, description });
 };
 
@@ -80,7 +83,7 @@ export const action: ActionFunction = async ({ request }) => {
         createdAt: new Date(Date.now()),
         type: Event.NewMessage
     };
-    addToHistory(newMessage);
+    createMessage(username, Event.NewMessage, message).catch(console.error);
     chatEmitter.emit("newmessage", newMessage);
 
     return null;
