@@ -164,6 +164,8 @@ const Chat = () => {
         };
     }, []);
 
+    useEffect(() => endRef.current?.scrollIntoView(), []);
+
     const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
         if (
             (!isScrolled &&
