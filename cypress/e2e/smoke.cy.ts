@@ -1,4 +1,8 @@
 describe("smoke tests", () => {
+    beforeEach(() => {
+        cy.exec("prisma migrate reset --force");
+    });
+
     afterEach(() => {
         cy.cleanupUser();
     });
