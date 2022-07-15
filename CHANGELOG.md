@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0](https://github.com/Tassadaritze/tassad-site-remix/compare/v0.5.0...v0.6.0) (2022-07-15)
+
+
+### Features
+
+* track sessions and usernames in database ([768dfe3](https://github.com/Tassadaritze/tassad-site-remix/commit/768dfe3a704956bd6535470efffcd1dce97ffa41))
+
+
+### Bug Fixes
+
+* add missing internationalization ([48b0657](https://github.com/Tassadaritze/tassad-site-remix/commit/48b0657238c6884a6d7f012d0142d047404c4a62))
+* sort message history in ascending id order ([1af9d34](https://github.com/Tassadaritze/tassad-site-remix/commit/1af9d34658d6ff24a909602dd4a3197042f559cb))
+* submit chat form with send button by default ([54f2efd](https://github.com/Tassadaritze/tassad-site-remix/commit/54f2efd7230668817099c32409151c26ed37d738))
+
 ## 0.5.0 (2022-07-15)
 
 
