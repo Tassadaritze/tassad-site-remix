@@ -262,20 +262,27 @@ const Chat = () => {
                     </ul>
                     <Form method="post" ref={formRef} className="flex">
                         <div className="flex w-full flex-col">
-                            <input
-                                type="text"
-                                name="message"
-                                placeholder={t("chatMessageInputPlaceholder")}
-                                autoComplete="off"
-                                onInput={(e) => setInputLength(e.currentTarget.value.length)}
-                                ref={inputRef}
-                                className="border-2 border-violet-6 pl-1 text-violet-11 ring-violet-7 dark:border-violet-dark-6 dark:ring-violet-dark-7"
-                            />
-                            {inputLength + 100 > MAX_MESSAGE_LENGTH && (
-                                <p className={`w-fit self-end px-2 ${inputLengthStyle}`}>
-                                    {MAX_MESSAGE_LENGTH - inputLength}
-                                </p>
-                            )}
+                            <div className="flex">
+                                <div className="flex w-full flex-col">
+                                    <input
+                                        type="text"
+                                        name="message"
+                                        placeholder={t("chatMessageInputPlaceholder")}
+                                        autoComplete="off"
+                                        onInput={(e) => setInputLength(e.currentTarget.value.length)}
+                                        ref={inputRef}
+                                        className="border-2 border-violet-6 pl-1 text-violet-11 ring-violet-7 dark:border-violet-dark-6 dark:ring-violet-dark-7"
+                                    />
+                                    {inputLength + 100 > MAX_MESSAGE_LENGTH && (
+                                        <p className={`w-fit self-end px-2 ${inputLengthStyle}`}>
+                                            {MAX_MESSAGE_LENGTH - inputLength}
+                                        </p>
+                                    )}
+                                </div>
+                                <button className="ml-1 h-fit border-2 border-violet-7 bg-violet-9 px-2 text-violet-dark-12 hover:border-violet-8 hover:bg-violet-10 dark:border-violet-dark-7 dark:bg-violet-dark-9 dark:hover:border-violet-dark-8 dark:hover:bg-violet-dark-10">
+                                    {tc("send")}
+                                </button>
+                            </div>
                             <button
                                 name="logout"
                                 value="true"
@@ -284,9 +291,6 @@ const Chat = () => {
                                 Log out
                             </button>
                         </div>
-                        <button className="ml-1 h-fit border-2 border-violet-7 bg-violet-9 px-2 text-violet-dark-12 hover:border-violet-8 hover:bg-violet-10 dark:border-violet-dark-7 dark:bg-violet-dark-9 dark:hover:border-violet-dark-8 dark:hover:bg-violet-dark-10">
-                            {tc("send")}
-                        </button>
                     </Form>
                 </main>
                 <ChatUsers users={usersState} />
