@@ -12,12 +12,20 @@ import i18next from "~/i18next.server";
 import { createMessage, getMessages } from "~/models/message.server";
 import { getSession } from "~/session.server";
 
+interface LoaderMessage extends Omit<Awaited<ReturnType<typeof getMessages>>[number], "createdAt"> {
+    createdAt: string;
+}
+
 type LoaderData = {
     users: typeof users;
     messageHistory: Awaited<ReturnType<typeof getMessages>>;
     title: string;
     description: string;
 };
+
+interface LoaderDataReturn extends Omit<LoaderData, "messageHistory"> {
+    messageHistory: LoaderMessage[];
+}
 
 const isLoaderData = (obj: unknown): obj is LoaderData =>
     typeof (obj as LoaderData).title === "string" && typeof (obj as LoaderData).description === "string";
@@ -90,8 +98,12 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 const Chat = () => {
-    const { users, messageHistory } = useLoaderData<LoaderData>();
-    messageHistory.forEach((message) => (message.createdAt = new Date(message.createdAt)));
+    const { users, messageHistory: loaderMessageHistory } = useLoaderData<LoaderDataReturn>();
+    const messageHistory: Message[] = [];
+    loaderMessageHistory.forEach(
+        (loaderMessage, index) =>
+            (messageHistory[index] = { ...loaderMessage, createdAt: new Date(loaderMessage.createdAt) })
+    );
 
     const [messages, setMessages] = useState<Message[]>(messageHistory);
     const [isScrolled, setIsScrolled] = useState(true);
