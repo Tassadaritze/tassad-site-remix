@@ -4,5 +4,6 @@
 
   "chatUsernameFormLabel": "Введите имя для показа в чате:",
   "chatUsernameTooLongError": "Имя не может быть длиннее",
-  "characters": "символов"
+  "characters": "символов",
+  "chatUsernameInUseError": "Это имя уже используется. Пожалуйста, выберите уникальное имя"
 }

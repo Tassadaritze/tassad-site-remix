@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import invariant from "tiny-invariant";
 import i18next from "~/i18next.server";
 
-import { commitSession, getSession } from "~/session.server";
+import { commitSession, getSession, isUsernameAvailable } from "~/session.server";
 
 type LoaderData = {
     error: unknown;
@@ -51,9 +51,11 @@ export const action: ActionFunction = async ({ request }) => {
 
     username = username.trim();
 
-    if (username.length > USERNAME_CHAR_LIMIT) {
+    if (username.length > USERNAME_CHAR_LIMIT || !(await isUsernameAvailable(username))) {
         const t = await i18next.getFixedT(request, "chat.user");
-        session.flash("error", `${t("chatUsernameTooLongError")} ${USERNAME_CHAR_LIMIT} ${t("characters")}`);
+        username.length > USERNAME_CHAR_LIMIT
+            ? session.flash("error", `${t("chatUsernameTooLongError")} ${USERNAME_CHAR_LIMIT} ${t("characters")}`)
+            : session.flash("error", t("chatUsernameInUseError"));
 
         return redirect("/chat/user", {
             headers: {

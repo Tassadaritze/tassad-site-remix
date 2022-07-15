@@ -10,7 +10,7 @@ import type { Message } from "~/chat.server";
 import { chatEmitter, Event, users } from "~/chat.server";
 import i18next from "~/i18next.server";
 import { createMessage, getMessages } from "~/models/message.server";
-import { getSession } from "~/session.server";
+import { destroySession, getSession } from "~/session.server";
 
 interface LoaderMessage extends Omit<Awaited<ReturnType<typeof getMessages>>[number], "createdAt"> {
     createdAt: string;
@@ -73,7 +73,16 @@ export const action: ActionFunction = async ({ request }) => {
         return redirect("/chat/user");
     }
 
-    const message = (await request.formData()).get("message");
+    const formData = await request.formData();
+    const isLogout = formData.get("logout");
+    if (isLogout) {
+        return redirect("/chat/user", {
+            headers: {
+                "Set-Cookie": await destroySession(session)
+            }
+        });
+    }
+    const message = formData.get("message");
 
     invariant(typeof message === "string", "message must be a string");
 
@@ -267,6 +276,13 @@ const Chat = () => {
                                     {MAX_MESSAGE_LENGTH - inputLength}
                                 </p>
                             )}
+                            <button
+                                name="logout"
+                                value="true"
+                                className="mt-2 self-center border-2 border-red-7 bg-red-9 px-2 text-red-dark-12 hover:border-red-8 hover:bg-red-10 dark:border-red-dark-7 dark:bg-red-dark-9 dark:hover:border-red-dark-8 dark:hover:bg-red-dark-10"
+                            >
+                                Log out
+                            </button>
                         </div>
                         <button className="ml-1 h-fit border-2 border-violet-7 bg-violet-9 px-2 text-violet-dark-12 hover:border-violet-8 hover:bg-violet-10 dark:border-violet-dark-7 dark:bg-violet-dark-9 dark:hover:border-violet-dark-8 dark:hover:bg-violet-dark-10">
                             {tc("send")}

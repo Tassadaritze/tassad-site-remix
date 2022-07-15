@@ -4,5 +4,6 @@
 
   "chatUsernameFormLabel": "Enter a username to be shown in chat:",
   "chatUsernameTooLongError": "Username cannot be longer than",
-  "characters": "characters"
+  "characters": "characters",
+  "chatUsernameInUseError": "That username is already in use. Please choose a unique username"
 }
