@@ -8,6 +8,9 @@ export const getMessages = () => {
             content: true,
             createdAt: true,
             type: true
+        },
+        orderBy: {
+            id: "asc"
         }
     });
 };
