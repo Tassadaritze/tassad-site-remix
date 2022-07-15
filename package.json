@@ -14,7 +14,7 @@
     "dev:remix": "remix watch",
     "format": "prettier --write .",
     "generate:css": "tailwindcss -o ./app/styles/tailwind.css",
-    "heroku-postbuild": "prisma generate && prisma migrate deploy",
+    "heroku-postbuild": "run-s build:* && prisma generate && prisma migrate deploy",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "setup": "prisma generate && prisma migrate deploy",
     "start": "node ./server.js",
