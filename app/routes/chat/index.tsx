@@ -288,7 +288,7 @@ const Chat = () => {
                                 value="true"
                                 className="mt-2 self-center border-2 border-red-7 bg-red-9 px-2 text-red-dark-12 hover:border-red-8 hover:bg-red-10 dark:border-red-dark-7 dark:bg-red-dark-9 dark:hover:border-red-dark-8 dark:hover:bg-red-dark-10"
                             >
-                                Log out
+                                {tc("logOut")}
                             </button>
                         </div>
                     </Form>
