@@ -101,6 +101,20 @@ jobs:
         with:
           useLockFile: false
 
+      - name: Start PostgreSQL on Ubuntu
+        run: |
+          sudo systemctl start postgresql.service
+          pg_isready
+
+      - name: Create additional user
+        run: |
+          sudo -u postgres psql --command="CREATE USER cypress PASSWORD 'test'" --command="\du"
+
+      - name: Create additional database
+        run: |
+          sudo -u postgres createdb --owner=cypress cypress
+          PGPASSWORD=test psql --username=cypress --host=localhost --list timetable
+
       - name: 🛠 Setup Database
         run: npx prisma migrate reset --force
 
