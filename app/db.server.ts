@@ -16,12 +16,12 @@ declare global {
 if (process.env.NODE_ENV === "production") {
     prisma = new PrismaClient();
 
-    __db__.$use(async (params, next) => {
+    prisma.$use(async (params, next) => {
         if (params.action === "create" && params.model === "Message") {
             const result = (await next(params)) as Message;
-            const messageCount = await __db__.message.count();
+            const messageCount = await prisma.message.count();
             if (messageCount > MESSAGE_LIMIT) {
-                await __db__.message.deleteMany({
+                await prisma.message.deleteMany({
                     where: {
                         id: {
                             lte: result.id - MESSAGE_LIMIT
