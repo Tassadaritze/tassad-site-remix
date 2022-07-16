@@ -253,7 +253,7 @@ const Chat = () => {
                             <button
                                 type="button"
                                 onClick={() => endRef.current?.scrollIntoView()}
-                                className="absolute bottom-[10%] left-[40%] rounded-md border-violet-alpha-7 bg-violet-alpha-9 px-2 text-mauve-dark-12 hover:border-violet-alpha-8 hover:bg-violet-alpha-10 dark:border-violet-dark-alpha-7 dark:bg-violet-dark-alpha-9 dark:hover:border-violet-dark-alpha-8 dark:hover:bg-violet-dark-alpha-10"
+                                className="absolute bottom-[15%] left-[40%] rounded-md border-violet-alpha-7 bg-violet-alpha-9 px-2 text-mauve-dark-12 hover:border-violet-alpha-8 hover:bg-violet-alpha-10 dark:border-violet-dark-alpha-7 dark:bg-violet-dark-alpha-9 dark:hover:border-violet-dark-alpha-8 dark:hover:bg-violet-dark-alpha-10"
                             >
                                 {t("scrollToNewMessages")}
                             </button>
