@@ -41,7 +41,7 @@ app.all(
           }
         : (req, res, next) => {
               if (req.headers["x-forwarded-proto"] !== "https" && req.hostname !== "localhost") {
-                  res.redirect(307, `https://${req.headers.host}`);
+                  res.redirect(307, `https://${req.headers.host}/${req.baseUrl}${req.path}`);
               }
 
               return createRequestHandler({
