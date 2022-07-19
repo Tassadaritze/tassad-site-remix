@@ -9,6 +9,7 @@ invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 export const { getSession, commitSession, destroySession } = createSessionStorage({
     cookie: {
         name: "__session",
+        httpOnly: true,
         maxAge: 2_629_800,
         path: "/",
         sameSite: "lax",

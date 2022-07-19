@@ -39,10 +39,16 @@ app.all(
                   mode: process.env.NODE_ENV
               })(req, res, next);
           }
-        : createRequestHandler({
-              build: require(BUILD_DIR),
-              mode: process.env.NODE_ENV
-          })
+        : (req, res, next) => {
+              if (req.headers["x-forwarded-proto"] !== "https") {
+                  res.redirect(307, `https://${req.headers.host}`);
+              }
+
+              return createRequestHandler({
+                  build: require(BUILD_DIR),
+                  mode: process.env.NODE_ENV
+              })(req, res, next);
+          }
 );
 const port = process.env.PORT || 3000;
 
