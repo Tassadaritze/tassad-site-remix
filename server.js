@@ -40,7 +40,7 @@ app.all(
               })(req, res, next);
           }
         : (req, res, next) => {
-              if (req.headers["x-forwarded-proto"] !== "https") {
+              if (req.headers["x-forwarded-proto"] !== "https" && req.hostname !== "localhost") {
                   res.redirect(307, `https://${req.headers.host}`);
               }
 
